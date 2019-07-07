@@ -3,4 +3,4 @@
  
   ## Java8
 
-- [lambda](https://github.com/CyC2018/CS-Notes/blob/master/notes/剑指%20Offer%20题解%20-%20目录.md)
+- [lambda](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda.md)
