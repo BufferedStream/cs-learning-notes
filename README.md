@@ -1,5 +1,9 @@
 # cs-learning-notes
 记录cs学习中的重要知识点
+
+# 参考链接
+- https://github.com/CyC2018/CS-Notes
+- https://github.com/BufferedStream/java8-tutorial
  
   ## Java8
   
