@@ -14,4 +14,5 @@
 ## Git
 
 - [Git的基本命令](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%B8%B8%E7%94%A8git%E5%91%BD%E4%BB%A4.md)
+- [Git的工作流程](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/git%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.md)
 
