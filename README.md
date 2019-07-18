@@ -3,7 +3,7 @@
 
 # 参考链接
 - https://github.com/CyC2018/CS-Notes
-- https://github.com/BufferedStream/java8-tutorial
+- https://github.com/winterbe/java8-tutorial
 - http://www.ruanyifeng.com/blog/
  
 ## Java8
