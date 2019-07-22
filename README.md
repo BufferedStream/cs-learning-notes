@@ -12,13 +12,17 @@
 - [lambda表达式](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda.md)
 - [函数式接口](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3.md
 )
-- [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
-- [lambda表达式](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda.md)
-- [函数式接口](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3.md
+- [方法与构造方法引用](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%96%B9%E6%B3%95%E4%B8%8E%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8.md)
+- [lambda表达式作用域](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%BD%9C%E7%94%A8%E5%9F%9F.md)
+- [内置函数式接口](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3.md
 )
-- [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
-- [lambda表达式](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda.md)
-- [函数式接口](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3.md
+- [Optionals](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/optionals.md)
+- [streams](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/streams.md)
+- [并行流](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%B9%B6%E8%A1%8C%E6%B5%81.md
+)
+- [Maps](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/maps.md)
+- [Date API](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Date%20API.md)
+- [Annotations ](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Annotations.md
 )
 
 ## Git
