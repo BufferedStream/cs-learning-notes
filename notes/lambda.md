@@ -13,9 +13,9 @@ Collections.sort(names, new Comparator<String>()
 
 ```
 
-静态的实用方法 `Collections.sort` 接受了一个list和一个comparator来对指定list排序。你会发现你经常需要new匿名类传递给sort方法。
+静态的实用方法 `Collections.sort` 接受了一个list和一个比较器对象来对指定list排序。你会发现你经常需要创建匿名对象传递给sort方法。
 
-与new匿名类相比，Java 8提供了一种更简便的语法，lambda表达式：
+与创建匿名对象相比，Java 8提供了一种更简便的语法，lambda表达式：
 
 ```
 Collections.sort(names, (String a, String b) -> {
