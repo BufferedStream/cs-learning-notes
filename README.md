@@ -5,6 +5,7 @@
 - https://github.com/CyC2018/CS-Notes
 - https://github.com/winterbe/java8-tutorial
 - http://www.ruanyifeng.com/blog/
+- https://zhuanlan.zhihu.com/p/59074616
  
 ## Java8
   
