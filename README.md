@@ -26,6 +26,10 @@
 - [Annotations ](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Annotations.md
 )
 
+## 英语术语
+- [Java 中 field 和 variable 区别及相关术语解释](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
+
+
 ## Git
 
 - [Git使用规范流程](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Git%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83%E6%B5%81%E7%A8%8B.md)
