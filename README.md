@@ -27,7 +27,7 @@
 )
 
 ## 英语术语
-- [Java 中 field 和 variable 区别及相关术语解释](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
+- [Java 中 field 和 variable 区别及相关术语解释](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E4%B8%AD%20field%20%E5%92%8C%20variable%20%E5%8C%BA%E5%88%AB%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%9C%AF%E8%AF%AD%E8%A7%A3%E9%87%8A.md)
 
 
 ## Git
