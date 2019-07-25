@@ -30,7 +30,7 @@
 - [Java 中 field 和 variable 区别及相关术语解释](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E4%B8%AD%20field%20%E5%92%8C%20variable%20%E5%8C%BA%E5%88%AB%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%9C%AF%E8%AF%AD%E8%A7%A3%E9%87%8A.md)
 
 ## 经典问题
-- [java为什么匿名内部类的参数引用是final的？](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E4%B8%AD%20field%20%E5%92%8C%20variable%20%E5%8C%BA%E5%88%AB%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%9C%AF%E8%AF%AD%E8%A7%A3%E9%87%8A.md)
+- [为什么java匿名内部类的参数引用必须是final的？](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E4%B8%BA%E4%BB%80%E4%B9%88java%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E7%9A%84%E5%8F%82%E6%95%B0%E5%BC%95%E7%94%A8%E5%BF%85%E9%A1%BB%E6%98%AFfinal%E7%9A%84%EF%BC%9F.md)
 
 ## Git
 
