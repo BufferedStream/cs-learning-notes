@@ -26,7 +26,7 @@ Object的每个实例都具有下列属性和方法。
 
   
 
-![1564123800216](C:\Users\26450\AppData\Roaming\Typora\typora-user-images\1564123800216.png)
+https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B01.png
 
 ```javascript
 function person(){};
