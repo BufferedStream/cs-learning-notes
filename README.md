@@ -8,7 +8,6 @@
 - https://zhuanlan.zhihu.com/p/59074616
  
 ## Java8
-  
 - [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
 - [lambda表达式](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda.md)
 - [函数式接口](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3.md
@@ -33,9 +32,11 @@
 - [为什么java匿名内部类的参数引用必须是final的？](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E4%B8%BA%E4%BB%80%E4%B9%88java%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB%E7%9A%84%E5%8F%82%E6%95%B0%E5%BC%95%E7%94%A8%E5%BF%85%E9%A1%BB%E6%98%AFfinal%E7%9A%84%EF%BC%9F.md)
 
 ## Git
-
 - [Git使用规范流程](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Git%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83%E6%B5%81%E7%A8%8B.md)
 - [Git分支管理策略](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Git%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86%E7%AD%96%E7%95%A5.md)
 - [Git的基本命令](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%B8%B8%E7%94%A8git%E5%91%BD%E4%BB%A4.md)
 - [Git的工作流程](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/git%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.md)
 - [Git远程操作详解](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Git%E8%BF%9C%E7%A8%8B%E6%93%8D%E4%BD%9C%E8%AF%A6%E8%A7%A3.md)
+
+## JavaScript
+- [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
