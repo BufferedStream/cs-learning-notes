@@ -10,7 +10,7 @@ Class variables and instance variables are fields while local varables and param
 
 
 
-#### 术语解释：
+#### 1. 术语解释：
 
 1. **域或字段、实例变量、成员变量**（field, instance variable, member variable, non-static field）
 
@@ -86,11 +86,13 @@ Strictly speaking, a parameter is a variable within the definition of a method. 
 
    可以被用户设置或获取的对象特征即为属性。
    POJO 或 JavaBean 中的成员变量也称作属性（具有set、getter方法）。
+   
+   
 
+#### 2.**最后，总结一下国内目前的惯用法**（英文取其一，序号对应上文）：
 
+​	
 
-   **最后，总结一下国内目前的惯用法**（英文取其一，序号对应上文）：
-	
 1. field -> 成员变量， instance variable / non-static field -> 实例变量/非静态变量
 2. class variable -> 静态变量
 3. local variable -> 本地变量
