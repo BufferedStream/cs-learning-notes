@@ -20,7 +20,7 @@ Class variables and instance variables are fields while local varables and param
 
    - 虽然有如上定义，但是一般在使用时，成员变量（field）包括 instance variable 和 class variable。为了区分，个人认为，用实例变量/非静态变量（instance variable / non-static field）描述上面的定义更佳。
 
-   - 成员变量与特定的对象相关联，只能通过对象（new 出）访问。
+   - 成员变量与特定的对象相关联，只能通过对象（new 出来的）访问。
 
    - 声明在类中，但不在方法或构造方法中。
 
