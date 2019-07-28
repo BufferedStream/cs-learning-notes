@@ -62,7 +62,7 @@ Strictly speaking, a parameter is a variable within the definition of a method. 
 
 
 
-​	5. **不可变量、常量**（final variable, constant）
+5. **不可变量、常量**（final variable, constant）
 
 ​		即为使用 final 关键词修饰的变量。不可变量属于成员变量。
 
@@ -90,7 +90,7 @@ Strictly speaking, a parameter is a variable within the definition of a method. 
 
 
    **最后，总结一下国内目前的惯用法**（英文取其一，序号对应上文）：
-
+	
 1. field -> 成员变量， instance variable / non-static field -> 实例变量/非静态变量
 2. class variable -> 静态变量
 3. local variable -> 本地变量
