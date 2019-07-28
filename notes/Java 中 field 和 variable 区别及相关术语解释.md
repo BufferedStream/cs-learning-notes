@@ -12,7 +12,7 @@ Class variables and instance variables are fields while local varables and param
 
 #### 1. 术语解释：
 
-1. **域或字段、实例变量、成员变量**（field, instance variable, member variable, non-static field）
+1. ##### **域或字段、实例变量、成员变量**（field, instance variable, member variable, non-static field）
 
    > field: A data member of a class. Unless specified otherwise, a field is not static.
 
@@ -32,7 +32,7 @@ Class variables and instance variables are fields while local varables and param
 
      
 
-2. **类字段、静态字段、静态变量**（class variable, static field, staic variable）
+2. ##### **类字段、静态字段、静态变量**（class variable, static field, staic variable）
 
 - 使用 static 修饰的字段，一般叫做静态变量。
 - 声明在类中，但不在方法或构造方法中。
@@ -42,7 +42,8 @@ Class variables and instance variables are fields while local varables and param
 
 
 
-3. **局部变量**（local variable）
+3. ##### **局部变量**（local variable）
+   
    定义在一个区块内（通常会用大括号包裹），区块外部无法使用的变量。
 
 - 定义在一个区块内（通常会用大括号包裹），没有访问修饰符，区块外部无法使用的变量。
@@ -51,7 +52,7 @@ Class variables and instance variables are fields while local varables and param
 
 
 
-​	4. **参数**（input parameter, parameter (variable), argument）
+##### 	4. **参数**（input parameter, parameter (variable), argument）
 
 ​		这个就不多说了，要注意的是 argument 和 parameter 的区别（下文）。
 ​	另外，Oracle 官方文档中将参数分为了构造参数、方法参数和异常参数三部分。
@@ -62,13 +63,13 @@ Strictly speaking, a parameter is a variable within the definition of a method. 
 
 
 
-5. **不可变量、常量**（final variable, constant）
+5. ##### **不可变量、常量**（final variable, constant）
 
 ​		即为使用 final 关键词修饰的变量。不可变量属于成员变量。
 
 ​	
 
- 6. **成员**（member）
+ 6. ##### **成员**（member）
 
     ```
     A field or method of a class. Unless specified otherwise, a member is not static.
@@ -78,7 +79,7 @@ Strictly speaking, a parameter is a variable within the definition of a method. 
 
 
 
-7. **属性**（property）
+7. ##### **属性**（property）
 
    ```
    Characteristics of an object that users can set, such as the color of a window.
@@ -90,8 +91,6 @@ Strictly speaking, a parameter is a variable within the definition of a method. 
    
 
 #### 2.**最后，总结一下国内目前的惯用法**（英文取其一，序号对应上文）：
-
-​	
 
 1. field -> 成员变量， instance variable / non-static field -> 实例变量/非静态变量
 2. class variable -> 静态变量
