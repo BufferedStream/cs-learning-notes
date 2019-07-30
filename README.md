@@ -6,6 +6,8 @@
 - https://github.com/winterbe/java8-tutorial
 - http://www.ruanyifeng.com/blog/
 - https://zhuanlan.zhihu.com/p/59074616
+- https://www.jianshu.com/p/08e2d85d3ce9
+- JavaScript高级程序设计（第3版）
  
 ## Java8
 - [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
@@ -40,5 +42,5 @@
 
 ## JavaScript
 - [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
-- [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
-- [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
+- [JavaScript执行环境及作用域](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83%E5%8F%8A%E4%BD%9C%E7%94%A8%E5%9F%9F.md)
+- [JavaScript创建对象](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1.md)
