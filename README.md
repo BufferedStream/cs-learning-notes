@@ -40,3 +40,5 @@
 
 ## JavaScript
 - [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
+- [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
+- [JavaScript对象与函数](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0.md)
