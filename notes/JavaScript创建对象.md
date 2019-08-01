@@ -13,7 +13,7 @@ function createPerson(name, age, job) {
 	o.age = age;
 	o.job = job;
 	o.sayName = function() {
-		alert(this.name);
+		console.log(this.name);
 	};
 	return o;
 }
@@ -36,7 +36,7 @@ function Person(name, age, job) {
 	this.age = age;
 	this.job = job;
 	this.sayName = function() {
-		alert(this.name);
+		console.log(this.name);
 	}
 }
 
@@ -98,7 +98,7 @@ function Person(name, age, job) {
 	this.name = name;
 	this.age = age;
 	this.job = job;
-	this.sayName = new Function("alert(this.name);");	//与声明函数在逻辑上是等价的
+	this.sayName = new Function("console.log(this.name);");	//与声明函数在逻辑上是等价的
 }
 ```
 
@@ -119,7 +119,7 @@ function Person(name, age, job) {
 }
 
 function sayName() {
-    alert(this.name);
+    console.log(this.name);
 }
 
 var person1 = new Person("zhangsan", 18, "Software Engineer");
@@ -134,13 +134,47 @@ var person2 = new Person("lisi", 19, "Docotor");
 
 ​		我们创建的每个函数都有一个prototype（原型）属性，这个属性是一个指针，指向一个对象，而这个对象的用途是包含可以由特定类型的所有实例共享的属性和方法。如果按照字面意思来理解，那么prototype就是通过调用构造函数而创建的哪个对象实例的原型对象。使用原型对象的好处是可以让所有实例共享它所包含的属性和方法。换句话说，不必在构造函数中定义对象实例的信息，而是可以将这些信息直接添加到原型对象中，如下面的例子所示。
 
-​		
+```js
+function Person() {
+}
+
+Person.prototype.name = "zhangsan";
+Person.prototype.age = 19;
+Person.prototype.job = "Software Engineer";
+Person.prototype.sayName = function() {
+  console.log(this.name);  
+};
+
+var person1 = new Person();
+person1.sayName();		//"zhangsan"
+
+var person2 = new Person();
+person2.sayName();		//"zhangsan"
+console.log(person1.sayName == person2.sayName);	//true
+```
+
+​		在此，我们将`sayName()`方法和所有属性直接添加到了Person的prototype属性中，构造函数变成了空函数。即使如此，也仍然可以通过调用构造函数来创建新对象，而且新对象还会具有相同的属性和方法。但与构造函数模式不同的是，新对象的这些属性和方法是由所有实例共享的。换句话说，`person1`和`person2`访问的都是同一组属性和同一个`sayName()`函数。要理解原型模式的工作原理，必须先理解`ECMAScript`中原型对象的性质。
+
+##### 		1.理解原型对象
+
+​		无论什么时候，只要创建了一个新函数，就会根据一组特定的规则为该函数创建一个prototype属性，这个属性指向函数的原型对象。在默认情况下，所有原型对象都会自动获得一个constructor（构造函数）属性，这个属性包含一个指向prototype属性所在函数的指针。就拿前面的例子来说，`Person.prototype.constructor`指向Person。而通过这个构造函数，我们还可继续为原型对象添加其他属性和方法。
+
+```js
+Person == Person.prototype.constructor	//true
+typeof Person.prototype		//"object"
+```
+
+​		创建了自定义的构造函数之后，其原型对象默认只会取得constructor属性：至于其他方法，则都是从Object继承而来的。当调用构造函数创建一个新实例后，该实例的内部将包含一个指针（内部属性），指向构造函数的原型对象。`ECMA-262`第五版中管这个指针叫[[Prototype]]。虽然在脚本中没有标准的方式访问[[Prototype]]，但Firefox、Safari和Chrome在每个对象上都支持一个属性`_proto_`；而在其他实现中，这个属性对脚本则是完全不可见的。不过，要明确的真正重要的一点就是，这个连接存在于实例与构造函数的原型对象之间，而不是存在于实例与构造函数之间。
+
+```js
+Person1._proto_ == Person;	//false
+Person1._proto_ == Person.prototype;	//true
+```
+
+​		如下图所示，展现了各个对象之间的关系。
 
 
 
+​		上图展示了Person构造函数、Person的原型属性以及Person现有的两个实例之间的关系。在此，`Person.prototype`指向了原型对象，而`Person.prototype.constructor`又指向了Person。原型对象中出了包含constructor属性之外，还包括后来添加的其他属性。Person的每个实例——`person1`和`person2`都包含一个内部属性，该属性仅仅指向了`Person.prototype`；换句话说，**它们与构造函数没有直接的关系**。此外，要格外注意的是，虽然这两个实例都不包含属性和方法，但我们却可以调用`person1.sayName()`。这是通过查找对象属性的过程来实现的。
 
-
-
-
-
-
+​		`isPrototypeOf()`方法和`Object.getPrototypeOf()`方法是用来确定[[Prototype]]属性的方法。使用`Object.getPrototypeOf()`可以很方便地取得一个对象的原型，而在这利用原型实现继承的情况下是非常重要的。	
