@@ -177,4 +177,14 @@ Person1._proto_ == Person.prototype;	//true
 
 ​		上图展示了Person构造函数、Person的原型属性以及Person现有的两个实例之间的关系。在此，`Person.prototype`指向了原型对象，而`Person.prototype.constructor`又指向了Person。原型对象中出了包含constructor属性之外，还包括后来添加的其他属性。Person的每个实例——`person1`和`person2`都包含一个内部属性，该属性仅仅指向了`Person.prototype`；换句话说，**它们与构造函数没有直接的关系**。此外，要格外注意的是，虽然这两个实例都不包含属性和方法，但我们却可以调用`person1.sayName()`。这是通过查找对象属性的过程来实现的。
 
-​		`isPrototypeOf()`方法和`Object.getPrototypeOf()`方法是用来确定[[Prototype]]属性的方法。使用`Object.getPrototypeOf()`可以很方便地取得一个对象的原型，而在这利用原型实现继承的情况下是非常重要的。	
+​		`isPrototypeOf()`方法和`Object.getPrototypeOf()`方法是用来确定[[Prototype]]属性的方法。使用`Object.getPrototypeOf()`可以很方便地取得一个对象的原型，而这在利用原型实现继承的情况下是非常重要的。
+
+​		每当代码读取某个对象的某个属性时，都会执行一次搜索，目标是具有给定名字的属性。	搜索首先从对象实例本身开始。如果在实例中找到了具有给定名字的属性，则返回该属性的值；如果没有找到，则继续搜索指针指向的原型对象，在原型对象中查找具有给定名字的属性。如果在原型对象中找到了这个属性，则返回该属性的值。
+
+​		JavaScript高级程序设计里说，"虽然可以通过对象实例访问保存在原型中的值，但却不能通过对象实例重写原型中的值"。但是在chrome控制台里还是可以实现的，如下所示：
+
+```js
+person2.__proto__.name = "lisi";
+person1.name == "lisi";		//true
+```
+
