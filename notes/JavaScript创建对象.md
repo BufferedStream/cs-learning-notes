@@ -188,3 +188,51 @@ person2.__proto__.name = "lisi";
 person1.name == "lisi";		//true
 ```
 
+
+
+##### 2.原型对象的问题
+
+​		原型模式也不是没有缺点。首先，它省略了为构造函数传递初始化参数这一环节，结果所有实例在默认情况下都将取得相同的属性值。虽然这会在某种程度上带来一些不方便，但还不是原型的最大问题。原型模式的最大问题是由其共享的本性所导致的。
+
+​		原型中所有属性是被很多实例共享的，这种共享对于函数非常合适。对于那些包含基本值的属性倒也说得过去，毕竟，通过在实例上添加一个同名属性，可以隐藏原型中得对象属性。然而，对于包含引用类型值得属性来说，问题就比较突出了。如下例：
+
+```js
+function Person() {
+}
+
+Person.prototype = {
+	constructor : Person,
+	name : "zhangsan",
+	age : "19",
+	friends : ["lisi", "wangwu"],
+	sayName : function() {
+		console.log(this.name);
+	} 
+};
+
+var person1 = new Person();
+var person2 = new Person();
+
+person1.friends.push("zhaoliu");
+
+console.log(person2.friends);	//["lisi,wangwu,zhaoliu"]
+```
+
+​		假如我们得初衷就是像这样在所有实例中共享一个数组，那么对这个结果我没有话可说。可是，实例一般都是要有属于自己的全部属性的。而这个问题正是我们很少看到有人单独使用原型模式的原因所在。
+
+
+
+#### 4.组合使用构造函数模式和原型模式
+
+
+
+
+
+
+
+
+
+
+
+
+
