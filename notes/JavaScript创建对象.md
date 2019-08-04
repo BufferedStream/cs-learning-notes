@@ -224,6 +224,47 @@ console.log(person2.friends);	//["lisi,wangwu,zhaoliu"]
 
 #### 4.组合使用构造函数模式和原型模式
 
+​		创建自定义类型的最常见方式，就是组合使用构造函数模式与原型模式。构造函数模式用于定义实例属性，而原型模式用于定义方法和共享的属性。结果，每个实例都会有自己的一份实例属性的副本，但同时又共享着对方法的引用，最大限度地节省了内存。另外，这种混成模式还支持向构造函数传递参数；可谓是集两种模式之长。下面的代码重写了前面的例子。
+
+```js
+function Person(name, age, job) {
+	this.name = name;
+	this.age = age;
+	this.job = job;
+	this.friends = ["c", "d"];
+}
+
+Person.prototype = {
+	constructor : Person,
+	sayName : function() {
+		console.log(this.name);
+	}
+}
+
+var person1 = new Person("a", 19, "Software Engineer");
+var person2 = new Person("b", 18, "Doctor");
+
+person1.friends.push("e");
+console.log(person1.friends);	//["c", "d", "e"]
+console.log(person2.friends);	//["c", "d"]
+console.log(person1.friends == person2.friends);	//false
+console.log(person1.sayName == person2.sayName);	//true
+```
+
+​		在这个例子中，实例属性都是在构造函数中定义的，而由所有实例共享的属性constructor和方法`sayName()`则都是在原型中定义的。而修改了`person1.friends`（向其中添加一个新字符串），并不会影响到`person2.friends`。因为它们分别引用了不同的数组。
+
+​		这种构造函数与原型混成的模式，是目前在`ECMAScript`中使用最广泛、认同度最高的一种创建自定义类型的方法。可以说，这是用来定义引用类型的一种默认模式。
+
+
+
+#### 5.动态原型模式
+
+​		有其他`OO`语言经验的开发人员在看到独立的构造函数和原型时，很可能会感到非常困惑。动态原型模式正是致力于解决这个问题的一个方案，它把所有信息都封装在了构造函数中，而通过在构造函数中初始化原型（仅在必要的情况下），又保持了同时使用构造函数和原型的优点。换句话说，可以通过检查某个应该存在的方法是否有效，来决定是否需要初始化原型。如下例所示。
+
+​		注意构造函数中加粗的部分。这里只在`sayName()`方法不存在的情况下，才会将它添加到原型中。这段代码只会在初次调用构造函数时才会执行。此后，原型已经完成初始化，不需要再做什么修改了。不过要记住，这里对原型所作的修改，能够立即再所有实例中得到反映。因此，这种方法确实可以说非常完美。其中，if语句检查的可以是初始化之后应该存在的任何属性或方法——不必用一大堆if语句检查每个属性和每个方法；只要检查其中一个即可。对于采用这种模式创建的对象，还可以使用`instanceof`操作符确定它的类型。
+
+​		使用动态原型模式时，不能使用对象字面量重写原型。前面已经解释过了，如果在已经创建了实例的情况下重写原型，那么就会切断现有实例与新原型之间的联系。
+
 
 
 
