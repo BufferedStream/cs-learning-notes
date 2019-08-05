@@ -190,7 +190,73 @@ person1.name == "lisi";		//true
 
 
 
-##### 2.原型对象的问题
+##### 2.更简单的原型语法
+
+​		读者大概注意到了，前面例子中每添加一个属性和方法就要敲一遍`Person.prototype`。为减少不必要的输入，也为了从视觉上更好地封装原型的功能，更常见的做法是用一个包含所有属性和方法的对象字面量来重写整个原型对象，如下面的例子所示。
+
+```js
+function Person() {
+}
+
+Person.prototype = {
+	name : "zhangsan",
+	age : "19",
+	job : "Software Engineer",
+	sayName : function() {
+		console.log(this.name);
+	}
+};
+```
+
+​		在上面的代码中，我们将`Person.prototype`设置为等于一个以对象字面量形式创建的新对象。最终结果相同，但有一个例外：constructor属性不再指向Person了。前面曾经介绍过，每创建一个函数，就会同时创建它的prototype对象，这个对象也会自动获得constructor属性。而我们在这里使用的语法，本质上完全重写了默认的prototype对象，因此constructor属性也就变成了新对象的constructor属性（指向Object构造函数），不再指向Person函数。此时，尽管	`instanceof`操作符还能返回正确的结果，但通过constructor已经无法确定对象的类型了，如下所示。
+
+```js
+var friend = new Person();
+
+console.log(friend instanceof Object);	//true
+console.log(friend instanceof Person);	//true
+console.log(friend.constructor == Object);	//true
+console.log(friend.constructor == Person);	//false
+```
+
+​		在此，用`instanceof`操作符测试Object和Person仍然返回true，但constructor属性则等于Object而不等于Person了。如果constructor属性真的很重要，可以像下面这样特意将它设置回适当的值。
+
+```js
+function Person() {
+}
+
+Person.prototype = {
+	constructor : Person,
+	name : "zhangsan",
+	age : "19",
+	job : "Software Engineer",
+	sayName : function() {
+		console.log(this.name);
+	} 
+};
+```
+
+
+
+##### 3.原型的动态性
+
+​		由于在原型中查找值得过程是一次搜索，因此我们对原型对象所做的任何修改都能够立即从实例上反映出来——即使是先创建了实例后修改原型也照样如此。如下例。
+
+```js
+var friend = new Person();
+Person.prototype.sayHi = function() {
+	console.log("hi");
+};
+friend.sayHi();	//"hi"
+```
+
+​		以上代码先创建了Person的一个实例，并将其保存在person中。然后，下一条语句在`Person.prototype`中添加了一个方法`sayHi()`。即使person实例是在添加新方法之前创建的，但它仍然可以访问这个新方法。其原因可以归结为实例与原型之间的松散连接关系。当我们调用`person.sayHi()`时，首先会在实例中搜索名为`sayHi`的属性，在没找到的情况下，会继续搜索原型。因为实例与原型之间的连接不过是一个指针，而非一个副本，因此就可以在原型中找到新的`sayHi`属性并返回保存在那里的函数。
+
+​		
+
+
+
+##### 4.原型对象的问题
 
 ​		原型模式也不是没有缺点。首先，它省略了为构造函数传递初始化参数这一环节，结果所有实例在默认情况下都将取得相同的属性值。虽然这会在某种程度上带来一些不方便，但还不是原型的最大问题。原型模式的最大问题是由其共享的本性所导致的。
 
@@ -219,6 +285,8 @@ console.log(person2.friends);	//["lisi,wangwu,zhaoliu"]
 ```
 
 ​		假如我们得初衷就是像这样在所有实例中共享一个数组，那么对这个结果我没有话可说。可是，实例一般都是要有属于自己的全部属性的。而这个问题正是我们很少看到有人单独使用原型模式的原因所在。
+
+​		尽管可以随时为原型添加属性和方法，并且修改能够立即在所有对象实例中反映出来，但如果时重写整个原型对象，那么情况就不一样了。我们知道，调用构造函数时会为实例添加一个指向最初原型的[[Prototype]]指针，而把原型修改为另外一个对象就等于切断了构造函数与最初原型之间的联系。
 
 
 
@@ -282,9 +350,26 @@ friend.sayName();
 
 ​		注意构造函数中方法的部分。这里只在`sayName()`方法不存在的情况下，才会将它添加到原型中。这段代码只会在初次调用构造函数时才会执行。此后，原型已经完成初始化，不需要再做什么修改了。不过要记住，这里对原型所作的修改，能够立即再所有实例中得到反映。因此，这种方法确实可以说非常完美。其中，if语句检查的可以是初始化之后应该存在的任何属性或方法——不必用一大堆if语句检查每个属性和每个方法；只要检查其中一个即可。对于采用这种模式创建的对象，还可以使用`instanceof`操作符确定它的类型。
 
-​		使用动态原型模式时，不能使用对象字面量重写原型。前面已经解释过了，如果在已经创建了实例的情况下重写原型，那么就会切断现有实例与新原型之间的联系。
+​		使用动态原型模式时，不能使用对象字面量重写原型。前面已经解释过了，如果在已经创建了实例的情况下重写原型，那么就会切断现有实例与新原型之间的联系。如下例所示。
 
+```js
+function Person(name, age, job) {
+	//属性
+	this.name = name;
+	this.age = age;
+	this.job = job;
+	//方法
+    if (typeof this.sayName != "function") {
+        
+        Person.prototype= {
+          sayName : function() {console.log(this.name);}
+        };
+    }
+}
 
+var friend = new Person("lisi", 29, "Software Engineer");
+friend.sayName();	//Uncaught TypeError: friend.sayName is not a function
+```
 
 
 
