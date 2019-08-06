@@ -252,7 +252,29 @@ friend.sayHi();	//"hi"
 
 ​		以上代码先创建了Person的一个实例，并将其保存在person中。然后，下一条语句在`Person.prototype`中添加了一个方法`sayHi()`。即使person实例是在添加新方法之前创建的，但它仍然可以访问这个新方法。其原因可以归结为实例与原型之间的松散连接关系。当我们调用`person.sayHi()`时，首先会在实例中搜索名为`sayHi`的属性，在没找到的情况下，会继续搜索原型。因为实例与原型之间的连接不过是一个指针，而非一个副本，因此就可以在原型中找到新的`sayHi`属性并返回保存在那里的函数。
 
-​		
+​		尽管可以随时为原型添加属性和方法，并且修改能够立即在所有对象实例中反映出来，但如果是重写整个原型对象，那么情况就不一样了。我们知道，调用构造函数时会为实例添加一个指向最初原型的[[Prototype]]指针，而把原型修改为另外一个对象就等于切断了构造函数与最初原型之间的联系。请记住：实例中的指针仅指向原型，而不指向构造函数。看下面的例子。
+
+```js
+function Person() {
+}
+Person.prototype.id = 1;
+
+var friend = new Person();
+
+Person.prototype = {
+    constructor : Person,
+    name : "zhangsan",
+    job : "Software Engineer",
+	sayName : function() {
+		console.log(this.name);
+	} 
+}
+
+friend.sayName();	//error
+friend.id;	//1
+```
+
+​		显然，friend中保存的还是指向原来的原型的指针。
 
 
 
@@ -373,11 +395,59 @@ friend.sayName();	//Uncaught TypeError: friend.sayName is not a function
 
 
 
+#### 6.寄生构造函数模式
+
+​		通常，在前述的几种模式都不适用的情况下，可以使用寄生（parasitic）构造函数模式。这种模式的基本思想是创建一个函数，该函数的作用仅仅是封装创建对象的代码，然后再返回新的创建的对象；但从表面上看，这个函数又很像是典型的构造函数。下面是一个例子。
+
+```js
+function Person(name, age, job) {
+	var o = new Object();
+	o.name = name;
+	o.age = age;
+	o.sayName = function() {
+		console.log(this.name);
+	};
+	return o;
+}
+
+var friend = new Person("zhangsan", 29, "Software Engineer");
+friend.sayName();	//"zhangsan"
+```
+
+​		在这个例子中，Person函数创建了一个新对象，并以相应的属性和方法初始化该对象，然后又返回了这个对象。出了使用new操作符并把使用的包装函数叫做构造函数之外，这个模式跟工厂模式其实是一模一样的。构造函数再不返回值的情况下，默认会返回新对象实例。而通过再构造函数的末尾添加一个return语句，可以重写调用构造函数时返回的值。
+
+​		关于寄生构造函数模式，有一点需要说明：首先，返回的对象与构造函数或者与构造函数的原型属性之间没有关系；也就是说，构造函数返回的对象与在构造函数外部创建的对象没有什么不同。为此，不能依赖`instanceof`操作符来确定对象类型。由于存在上述问题，我们建议在可以使用其他模式的情况下，不要使用这种模式。
 
 
 
+#### 7.稳妥构造函数模式
 
+​		道格拉斯·克罗克福德（`Douglas Crockford`）发明了JavaScript中的稳妥对象（durable objects）这个概念。所谓稳妥对象，指的是没有公共属性，而且其方法也不引用this的对象。稳妥对象最适合在一些安全的环境中（这些环境中会禁止使用this和new），或者在防止数据被其他应用程序（如`Mashup`程序）改动时使用。稳妥构造函数遵循与寄生构造函数类似的模式，但有两点不同：一是新创建对象的实例方法不引用this；二是不适应new操作符调用构造函数。按照稳妥构造函数的要求，可以将前面的Person构造函数重写如下：
 
+```js
+function Person(name, age, job) {
+	
+	//创建要返回的对象
+	var o = new Object();
+	//可以在这里定义私有变量和函数
+	
+	//添加方法
+	o.sayName = function() {
+		console.log(name);
+	};
+	
+	//返回对象
+	return o;
+}
+```
 
+​		注意，在以这种模式创建的对象中，除了使用`sayName()`方法之外，没有任何其他办法访问name的值。可以像下面使用稳妥的Person构造函数。
 
+```js
+var friend = Person("zhangsan", 29, "Software Engineer");
+friend.sayName();	//"zhangsan"
+```
 
+​		这样，变量person中保存的是一个稳妥对象，而除了调用`sayName()`方法外。没有别的方式可以访问其数据成员。即使有其他代码会给这个对象添加方法或数据成员，但也不可能有别的方法访问传入到构造函数中的原始数据。稳妥构造函数模式提供的这种安全性，使得它非常适合在某些安全指向环境下使用。
+
+​		与寄生构造函数模式类似，使用稳妥构造哈桑农户模式创建的对象与构造函数之间也没有什么关系，因此`instanceof`操作符对这种对象也没有意义。
