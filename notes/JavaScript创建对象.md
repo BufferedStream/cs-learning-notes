@@ -172,7 +172,7 @@ Person1._proto_ == Person.prototype;	//true
 ```
 
 ​		如下图所示，展现了各个对象之间的关系。
-
+		https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A11.jpg
 
 
 ​		上图展示了Person构造函数、Person的原型属性以及Person现有的两个实例之间的关系。在此，`Person.prototype`指向了原型对象，而`Person.prototype.constructor`又指向了Person。原型对象中出了包含constructor属性之外，还包括后来添加的其他属性。Person的每个实例——`person1`和`person2`都包含一个内部属性，该属性仅仅指向了`Person.prototype`；换句话说，**它们与构造函数没有直接的关系**。此外，要格外注意的是，虽然这两个实例都不包含属性和方法，但我们却可以调用`person1.sayName()`。这是通过查找对象属性的过程来实现的。
