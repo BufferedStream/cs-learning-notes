@@ -6,7 +6,7 @@
 	var o = new Object();
 ```
 
-​	仅仅创建Object的实例并没有什么好处，但关键是要要理解一个重要的思想：即在`ECMAScript`中，（就像Java中的`java.lang.Object`对象一样）Object类型是所有它的实例的基础。换句话说，Object类型所具有的任何属性和方法也同样存在于更具体地对象中。
+&emsp;&emsp;仅仅创建Object的实例并没有什么好处，但关键是要要理解一个重要的思想：即在`ECMAScript`中，（就像Java中的`java.lang.Object`对象一样）Object类型是所有它的实例的基础。换句话说，Object类型所具有的任何属性和方法也同样存在于更具体地对象中。
 
 Object的每个实例都具有下列属性和方法。
 
