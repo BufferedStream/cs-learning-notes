@@ -66,7 +66,7 @@ person2.constructor == Person	//true
 
 &emsp;&emsp;对象的constructor属性最初是用来标识对象类型的。但是，提到检测对象类型，还是`instanceof`操作符要更可靠一些。
 
-&emsp;&emsp;创建自定义的构造函数意味着将来可以将它的实例标识为一种特定的类型：而这正式构造函数模式胜过工厂模式的地方。
+&emsp;&emsp;创建自定义的构造函数意味着将来可以将它的实例标识为一种特定的类型：而这正是构造函数模式胜过工厂模式的地方。
 
 
 
@@ -177,7 +177,7 @@ Person1._proto_ == Person.prototype;	//true
 		
 
 
-&emsp;&emsp;上图展示了Person构造函数、Person的原型属性以及Person现有的两个实例之间的关系。在此，`Person.prototype`指向了原型对象，而`Person.prototype.constructor`又指向了Person。原型对象中出了包含constructor属性之外，还包括后来添加的其他属性。Person的每个实例——`person1`和`person2`都包含一个内部属性，该属性仅仅指向了`Person.prototype`；换句话说，**它们与构造函数没有直接的关系**。此外，要格外注意的是，虽然这两个实例都不包含属性和方法，但我们却可以调用`person1.sayName()`。这是通过查找对象属性的过程来实现的。
+&emsp;&emsp;上图展示了Person构造函数、Person的原型属性以及Person现有的两个实例之间的关系。在此，`Person.prototype`指向了原型对象，而`Person.prototype.constructor`又指向了Person。原型对象中除了包含constructor属性之外，还包括后来添加的其他属性。Person的每个实例——`person1`和`person2`都包含一个内部属性，该属性仅仅指向了`Person.prototype`；换句话说，**它们与构造函数没有直接的关系**。此外，要格外注意的是，虽然这两个实例都不包含属性和方法，但我们却可以调用`person1.sayName()`。这是通过查找对象属性的过程来实现的。
 
 &emsp;&emsp;`isPrototypeOf()`方法和`Object.getPrototypeOf()`方法是用来确定[[Prototype]]属性的方法。使用`Object.getPrototypeOf()`可以很方便地取得一个对象的原型，而这在利用原型实现继承的情况下是非常重要的。
 
@@ -452,4 +452,4 @@ friend.sayName();	//"zhangsan"
 
 &emsp;&emsp;这样，变量person中保存的是一个稳妥对象，而除了调用`sayName()`方法外。没有别的方式可以访问其数据成员。即使有其他代码会给这个对象添加方法或数据成员，但也不可能有别的方法访问传入到构造函数中的原始数据。稳妥构造函数模式提供的这种安全性，使得它非常适合在某些安全指向环境下使用。
 
-&emsp;&emsp;与寄生构造函数模式类似，使用稳妥构造哈桑农户模式创建的对象与构造函数之间也没有什么关系，因此`instanceof`操作符对这种对象也没有意义。
+&emsp;&emsp;与寄生构造函数模式类似，使用稳妥构造函数模式创建的对象与构造函数之间也没有什么关系，因此`instanceof`操作符对这种对象也没有意义。
