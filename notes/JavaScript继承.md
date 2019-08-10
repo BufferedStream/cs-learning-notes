@@ -36,12 +36,16 @@ console.log(instance.getSuperValue());
 
 &emsp;&emsp;instance 的结构如下图所示。
 
-<div align=center>![image1](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF1.jpg)
-	</div>
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A11.jpg"/>
+</div>
+
 
 &emsp;&emsp;以上代码定义了两个类型： SuperType 和 SubType。每个类型分别有一个属性和一个方法。它们的主要区别是 SubType 继承了 SuperType，而继承是通过创建 SuperType 的实例，并将该实例赋给 SubType.prototype 实现的。实现的本质是重写原型对象，代之以一个新类型的实例。换句话说，原来存在于 SuperType 的实例中的所有属性和方法，现在也存在于  SubType.prototype 中了。在确立了继承关系之后，我们给 SubType.prototype 添加了一个方法，这样就在继承了 SuperType 的属性和方法的基础上又添加了一个新方法。这个例子中的实例以及构造构造函数和原型之间的关系如下图所示。
 
-![](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF2.jpg)
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF2.jpg"/>
+</div>
 
 &emsp;&emsp;在上面的代码中，我们没有是用 SubType 默认提供的原型，而是给它换了一个新原型；这个新原型就是 SuperType 的实例。于是，新原型不仅具有作为一个 SuperType 的实例所拥有的全部属性和方法，而且其内部还有一个指针，指向了 SuperType 的原型。最终结果就是这样的：instance 指向 SubType 的原型， SubType 的原型又指向  SuperType 的原型（通过 [[][][Prototype]] 指向的）。getSuperValue() 方法仍然还是 SuperType.prototype 中，但 property 则位于 SubType.prototype 中。这是因为 property 是一个实例属性，而 getSuperValue() 则是一个原型方法。既然 SubType.prototype 现在是 SuperType 的实例，那么 property 当然就位于该实例中了。此外，要注意 instance.constructor 现在指向的是 SuperType，这是因为原来 SubType.prototype 中的 constructor 被重写了的缘故。（实际上，不是 SubType 的 constructor 属性被重写了，而是 SubType 的原型通过 SuperType 的匿名对象指向了另一个对象——SuperType 的原型，而这个原型对象的 constructor 属性指向的是 SuperType）。
 
@@ -51,8 +55,9 @@ console.log(instance.getSuperValue());
 
 &emsp;&emsp;事实上，前面例子中展示的原型链还少一环。我们知道，所有引用类型都继承了 Object，而这个继承也是通过原型链实现的。大家要记住，所有函数的默认原型都是 Object 的实例，因此默认原型都会包含一个内部指针，指向 Object.prototype。这也正是所有自定义类型都会继承 toString()、valueOf() 等默认方法的根本原因。所以，我们说上面例子展示的原型链中还应该包括另外一个继承层次。下图为我们展示了该例子中完整的原型链。
 
-![](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF3.jpg)
-
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF3.jpg"/>
+</div>
 
 &emsp;&emsp;一句话，SubType 继承了 SuperType，而 SuperType 继承了 Object。当调用 instance.toString() 时，实际上调用的是保存在 Object.prototype中的那个方法。
 
