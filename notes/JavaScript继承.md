@@ -36,6 +36,10 @@ console.log(instance.getSuperValue());
 
 &emsp;&emsp;instance 的结构如下图所示。
 
+<div style="align: center">
+<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF1.jpg"/>
+</div>
+
 ![image1](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF1.jpg)
 
 
