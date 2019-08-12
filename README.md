@@ -8,6 +8,8 @@
 - https://zhuanlan.zhihu.com/p/59074616
 - https://www.jianshu.com/p/08e2d85d3ce9
 - JavaScript高级程序设计（第3版）
+- http://www.redis.cn/documentation.html
+- https://redis.io/documentation
  
 ## Java8
 - [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
