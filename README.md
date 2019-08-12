@@ -46,3 +46,6 @@
 - [JavaScript创建对象](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1.md)
 - [JavaScript继承](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1.md)
 
+## Redis
+- [Redis数据结构](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.md)
+
