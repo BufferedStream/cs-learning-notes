@@ -176,7 +176,7 @@ console.log(instance2.colors);		//["red", "blue", "green"]
 
 ​		
 
-##### 						1.传递参数
+##### 								1.传递参数
 
 &emsp;&emsp;相对于原型链而言，借用构造函数有一个很大的优势，即可以在子类型构造函数中向超类型构造函数传递参数。看下面这个例子。
 
@@ -202,7 +202,7 @@ console.log(instance.age);		//29
 
 ​		
 
-##### 				2.借用构造函数的问题
+##### 						2.借用构造函数的问题
 
 &emsp;&emsp;如果仅仅是借用构造函数，那么也将无法避免构造函数模式存在的问题——方法都在构造函数中定义，因此函数复用就无从谈起了。而且，在超类型的原型中定义的方法，对子类型而言也是不可见的，结果所有类型都只能使用构造函数模式。考虑到这些问题，借用构造函数的技术也是很少单独使用的。
 
@@ -255,7 +255,36 @@ instance2.sayAge();					//"27"
 
 
 
+#### 4.原型式继承
 
+​		道格拉斯 · 克罗克福德在 2006 年写了一篇文章，题为 Prototypal Inheritance in JavaScript （JavaScript 中的原型式继承）。在这篇文章中，他介绍了一种实现继承的方法，这种方法并没有使用严格意义上的构造函数。他的想法是借助原型可以基于已有的对象创建新对象，同时还不必因此创建自定义类型。为了达到这个目的，他给出了如下函数。	
+
+```js
+function object(o) {
+	function F() {}
+	F.prototype = o;
+	return new F();
+}
+```
+
+​		在 object() 函数内部，先创建了一个临时性的构造函数，然后将传入的对象作为这个构造函数的原型，最后返回了这个临时类型的一个新实例。从本质上讲， object() 对传入其中的对象执行了一次浅复制。来看下面的例子。
+
+```js
+var person = {
+	name: "zhangsan",
+	friends: ["lisi", "wangwu", "zhaoliu"]
+};
+
+var p1 = object(person);
+p1.name = "tom";
+p1.friends.push("jerry");
+
+var p2 = object(person);
+p2.name = "jack";
+p2.friends.push("johns");
+
+console.log(person.friends);	//["lisi", "wangwu", "zhaoliu", "jerry", "johns"]
+```
 
 
 
