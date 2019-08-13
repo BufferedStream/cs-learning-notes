@@ -63,3 +63,218 @@ INCRBY，DECR 和 DECRBY。实际上他们在内部就是同一个命令，只�
 INCR 是原子操作意味着什么呢？就是说即使多个客户端对同一个 key 发出 INCR 命令，也绝不会导致竞争的情况。
 
 对于字符串，另一个令人感兴趣的操作是 GETSET 命令，令如其名：他为 key 设置新值并且返回原值。这有什么用处呢？例如：你的系统每当有新用户访问时就用 INCR 命令操作一个 Redis key。你希望每小时对这个信息收集一次。你就可以 GETSET 这个 key 并给其赋值 0 并读取原值。
+
+为减少等待时间，也可以一次存储或获取多个 key 对应的值，使用 MSET 和 MGET 命令：
+
+```
+> mset a 10 b 20 c 30
+OK
+> mget a b c
+1) "10"
+2) "20"
+3) "30"
+```
+
+MGET 命令返回由值组成的数组。
+
+
+
+#### 修改或查询键空间
+
+有些指令不是针对任何具体的类型定义的，而是用于和整个键空间交互的。因此，它们可被用于任何类型的键。
+
+使用 EXISTS 命令返回 1 或 0 标识判断给定 key 的值是否存在，使用 DEL 命令可以删除 key 对应的值， DEL 命令返回 1 或 0 标识值是被删除（值存在）或者没被删除（ key 对应的值不存在）。
+
+```
+> set mykey hello
+OK
+> exists mykey
+(integer) 1
+> del mykey
+(integer) 1
+> exists mykey
+(integer) 0
+> del mykey
+(integer) 0
+```
+
+TYPE 命令可以返回 key 对应的值的存储类型：
+
+```
+> set mykey x
+OK
+> type mykey
+string
+> del mykey
+(integer) 1
+> type mykey
+none
+```
+
+
+
+#### Redis 超时：数据在限定时间内存活
+
+在介绍复杂类型前我们先介绍一个与值类型无关的 Redis 特性：超时。你可以对 key 设置一个超时时间，当这个时间到达后会被删除。
+
+- 精度可以使用毫秒或秒，默认是秒。
+- 但是，过期时间精度始终为1毫秒。
+- 有关过期的信息被复制并保留在磁盘上（过期时间本身会被持久化），当 Redis 服务器停止服务时，这个时间照样计算（这意味着 Redis 会保存密钥过期的日期）
+
+```
+> set key some-value
+OK
+> expire key 10
+(integer) 1
+> get key (immediately)
+"some-value"
+> get key (after some time)
+(nil)e
+```
+
+上面的例子使用了EXPIRE来设置超时时间(也可以再次调用这个命令来改变超时时间，或使用 PERSIST 命令去除超时时间 )。我们也可以使用 SET 命令在创建值的时候设置超时时间:
+
+```
+> set key 100 ex 10
+OK
+> ttl key
+(integer) 9
+```
+
+TTL  time to live，以秒为单位，返回给定 key 的剩余生存时间。
+
+
+
+#### Redis lists
+
+要说清楚列表数据类型，最好先讲一点儿理论背景，在信息技术界 List 这个词常常被使用不当。例如 “Python Lists” 名不副实（名为 Linked Lists），但他们实际上师叔祖（同样的数据类型在 Ruby 中叫做数组）。
+
+一般意义上讲，列表就是有序元素的序列： 10，20，1，2，3 就是一个列表。但用数组实现的 List 和用 LinkedList 实现的 List，在属性方面大不相同。
+
+Redis lists 基于 Linked Lists 实现。这意味着即使在一个 list 中有数百万个元素，在头部或尾部添加一个元素的操作，其时间复杂度也是常数级别的。用 LPUSH 命令在十个元素的 list 头部添加新元素，和在千万元素 list 头部添加新元素的速度相同。
+
+那么，坏消息是什么？在数组实现的 list 中利用索引访问元素的速度极快，而同样的操作在 linked list 实现的 list 上没有那么快。
+
+Redis Lists 用 linked list 实现的原因是：对于数据库系统来说，至关重要的特性是：能非常快的在很大的列表上添加元素。另一个重要因素是，正如你将要看到的： Redis lists 能在常数时间取得常数长度。如果快速访问集合元素很重要，建议使用可排序集合（sorted sets）。可排序集合我们会随后介绍。
+
+
+
+#### Redis lists 入门
+
+LPUSH 命令可向 list 的左边（头部）添加一个新元素，而 RPUSH 命令可向 list 的右边（尾部）添加一个新元素。最后 LRANGE 命令可从 list 中取出一定范围的元素：
+
+```
+> rpush mylist A
+(integer) 1
+> rpush mylist B
+(integer) 2
+> lpush mylist first
+(integer) 3
+> lrange mylist 0 -1
+1) "first"
+2) "A"
+3) "B"
+```
+
+LRANGE key start stop
+
+下标（index）参数 start 和 stop 都以 0 为底，也就是说，以 0 表示列表的第一个元素，以 1表示列表的第二个元素，以此类推。
+
+你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
+
+
+
+上面的所有命令的参数都可变，方便你一次向 list 存入多个值。
+
+```
+> rpush mylist 1 2 3 4 5 "foo bar"
+(integer) 9
+> lrange mylist 0 -1
+1) "first"
+2) "A"
+3) "B"
+4) "1"
+5) "2"
+6) "3"
+7) "4"
+8) "5"
+9) "foo bar"
+```
+
+还有一个重要的命令是 pop，它从 list 中删除元素并同时返回删除的值。可以在左边或右边操作。
+
+```
+> rpush mylist a b c
+(integer) 3
+> rpop mylist
+"c"
+> rpop mylist
+"b"
+> rpop mylist
+"a"
+> rpop mylist
+(nil)
+```
+
+
+
+#### List 的常用案例
+
+Lists 对很多案例都很有用，以下是两个最有代表性的使用案例：
+
+- 记录用户发布到社交网络的最新更新。
+- 进程之间的通信，使用生产者 - 消费者模式，生产者将消息推入列表，消费者（通常是 worker 进程）消费这些消息并执行操作。 Redis 具有特殊的 list 命令，能够使这种用法更加可靠和高效。
+
+例如，流行的 Ruby 库 resque 和 sidekiq 都使用 Redis list 来实现后台作业
+
+大名鼎鼎的 Twitter 就将用户发布的最新推文数据收录到 Redis 列表中。
+
+要逐步描述常见用例，请假设您的主页显示在照片共享社交网络中发布的最新照片，并且您希望加速访问。
+
+- 每一次一个用户上传一张新的照片，我们用 LPUSH 命令给 list 添加它的 id。
+- 当用户访问自己的主页，我们使用 LRANGE 0 9 去获取最新的 10 条数据。
+
+
+
+#### Capped lists
+
+在许多案例中我们仅仅希望使用 lists 去存储最新的数据记录，不管它们是社交网络更新的数据，日志或是什么别的东西。
+
+Redis 允许我们使用 lists 作为一个定容集合，只记住最新的 N 条数据记录并使用 LTRIM 命令丢弃所有最旧的数据记录。
+
+可以使用 LTRIM 把 list 从左边截取指定长度。
+
+```
+> rpush mylist 1 2 3 4 5
+(integer) 5
+> ltrim mylist 0 2
+OK
+> lrange mylist 0 -1
+1) "1"
+2) "2"
+3) "3"
+```
+
+通过 LTRIM 命令我们可以使用一个非常简单但有用的模式：同时执行 List push 操作 +  List trim 操作以添加新元素并丢弃超出限制的元素。
+
+```
+LPUSH mylist <some element>
+LTRIM mylist 0 999
+```
+
+以上命令为 list 新增了一个元素然后取出了最新的 1000 个元素放进 list。使用 LRANGE 命令你可以轻松取得最新的数据记录而不需要特意记录老的数据记录。
+
+注意：因为 LRANGE 命令的时间复杂度是 O(N)，访问首尾数据集的操作的时间复杂度都是常数级的。
+
+
+
+
+
+
+
+
+
+
+
+
+
