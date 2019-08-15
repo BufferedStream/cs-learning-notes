@@ -286,5 +286,79 @@ p2.friends.push("johns");
 console.log(person.friends);	//["lisi", "wangwu", "zhaoliu", "jerry", "johns"]
 ```
 
+​		 克罗克福德主张的这种原型式继承，要求你必须有一个对象可以作为另一个对象的基础。如果有这么一个对象的话，可以把它传递给 object() 函数，然后再根据具体需求对得到的对象加以修改即可。在这个例子中，可以作为另一个对象基础的是 person 对象，于是我们把它传入到 object() 函数中，然后改函数就会返回一个新对象。这个新对象将 person 作为原型，所以它的原型中就包含一个基本类型值属性和一个引用类型属性。这意味着 person.friends 不仅属于 person 所有，而且也会被 p1 和 p2 共享。实际上，这就相当于又创建了 person 对象的两个副本。
+
+​		ECMAScript5 通过新增 Object.create() 方法规范化了原型式继承。这个方法接收两个参数：一个用作新对象原型的对象和（可选的）一个为新对象定义额外属性的对象。在传入一个参数的情况下， Object.create() 与 object() 方法的行为相同。
+
+```js
+var person = {
+	name: "zhangsan",
+	friends: ["lisi", "wangwu", "zhaoliu"]
+};
+
+var p1 = Object.create(person);
+p1.name = "tom";
+p1.friends.push("jerry");
+
+var p2 = Object.create(person);
+p2.name = "jack";
+p2.friends.push("johns");
+
+console.log(person.friends);	//["lisi", "wangwu", "zhaoliu", "jerry", "johns"]
+```
+
+​		Object.create() 方法的第二个参数与 Object.defienProperties() 方法的第二个参数格式相同：每个属性都是通过自己的描述符定义的。以这种方式指定的任何属性都会覆盖原型对象上的同名属性。例如：
+
+```js
+var person = {
+	name: "zhangsan",
+	friends: ["lisi", "wangwu", "zhaoliu"]
+};
+
+var p1 = Object.create(person, {
+	name: {
+		value : "tom"
+	}
+});
+
+console.log(p1.name);	//"tom"
+```
+
+​		在没有必要兴师动众地创建构造函数，而只想让一个对象与另一个对象保持类似的情况下，原型式继承是完全可以胜任地。不过别忘了，包含引用类型值的属性始终都会共享相应的值，就像使用原型模式一样。
+
+
+
+#### 5.寄生式继承
+
+​		寄生式（parasotic）继承是与原型式继承紧密相关的一种思路，并且同样也是由克罗克福德推而广之的。寄生式继承的思路与寄生构造函数和工厂模式类似，即创建一个仅用于封装继承过程的函数，该函数在内部以某种方式来增强对象，最后再像真地是它做了所有工作一样返回对象。以下代码示范了寄生式继承模式。
+
+```js
+function createAnother(original) {
+	var clone = object(original);	//通过调用函数创建一个新对象
+    clone.sayHi = function() {		//以某种方式来增强这个对象
+    	console.log("hi");  
+    };
+    return clone;					//返回这个对象
+}
+```
+
+​		在这个例子中， createAnother() 函数接受了一个参数，也就是将要作为新对象基础的对象。然后，把这个对象（original）传递给 object() 函数，将返回的结果赋值给 clone。再为 clone 对象添加一个新方法 sayHi()，最后返回 clone 对象。可以像下面这样来使用 createAnother() 函数：
+
+```
+var person = {
+	name: "zhangsan",
+	friends: ["lisi", "wangwu", "zhaoliu"]
+}；
+
+var p1 = createAnother(person);
+p1.sayHi();	//"hi"
+```
+
+​		这个例子中的代码基于 person 返回了一个新对象—— p1。新对象不仅具有 person 的所有属性和方法，而且还有自己的 sayHi() 方法。
+
+​		在主要考虑对象而不是自定义类型和构造函数的情况下，寄生式继承也是一种有用的模式。前面示范继承模式时使用的 object() 函数不是必需的；任何能够返回新对象的函数都适用于此模式。
+
+​		使用寄生式继承来为对象添加函数，会由于不能做到函数复用而降低效率；这一点与构造函数模式类似。
+
 
 
