@@ -303,6 +303,108 @@ LTRIM mylist 0 999
 
 Redis hash 看起来就像一个 ”hash“ 的样子，由键值对组成：
 
+```
+> hmset user:1000 username antirez birthyear 1977 verified 1
+OK
+> hget user:1000 username
+"antirez"
+> hget user:1000 birthyear
+"1977"
+> hgetall user:1000
+1) "username"
+2) "antirez"
+3) "birthyear"
+4) "1977"
+5) "verified"
+6) "1"
+```
+
+Hash 便于表示 objects，实际上，你可以放入一个 hash 的域数量实际上没有限制（除了可用内存以外）。所以，你可以在你的应用中以不同的方式使用 hash。
+
+HMSET 指令设置 hash 中的多个域，而 HGET 取回单个域。 HMGET 和 HGET 类似，但返回一系列值：
+
+Redis 有检测成员的指令。一个特定的元素是否存在？
+
+```
+> sismember myset 3
+(integer) 1
+> sismember myset 30
+(integer) 0
+```
+
+“3” 是 set 的一个成员，而 “30” 不是。
+
+Sets 适合用于表示对象间的关系。 例如，我们可以轻易使用 set 来表示标记。
+
+一个简单的建模方式是，对每一个希望标记的对象使用 set。这个 set 包含和对象相关联的标签的 ID。
+
+假设我们想要给新闻打上标签。 假设新闻 ID 1000 被打上了 1,2,5 和 77 四个标签，我们可以使用一个 set 把 tag ID 和新闻条目关联起来：
+
+```
+> sadd news:1000:tags 1 2 5 77
+(integer) 4
+```
+
+但是，有时候我们可能也会需要相反的关系：所有被打上相同标签的新闻列表：
+
+```
+> sadd tag:1:news 1000
+(integer) 1
+> sadd tag:2:news 1000
+(integer) 1
+> sadd tag:5:news 1000
+(integer) 1
+> sadd tag:77:news 1000
+(integer) 1
+```
+
+获取一个对象的所有 tag 是很方便的：
+
+```
+> smembers news:1000:tags
+1. 5
+2. 1
+3. 77
+4. 2
+```
+
+注意：在这个例子中，我们假设你有另一个数据结构，比如一个 Redis hash，把标签 ID 对应到标签名称。
+
+使用 Redis 命令行，我们可以轻易实现其他一些有用的操作。比如，我们可能需要一个含有 1，2，10 和 27 标签的对象的列表。我们可以用 SINTER 命令来完成这件事。它获取不同 set 的交集。我们可以用：
+
+```
+> sinter tag:1:news tag:2:news tag:10:news tag:27:news
+... results here ...
+```
+
+不光可以取交集，还可以取并集，差集，获取随机元素，等等。
+
+获取一个元素的命令是 SPOP，它很适合对特定问题建模。比如，要实现一个基于 web 的扑克游戏，你可能需要用 set 来表示一副牌。假设我们用一个字符的前缀来表示不同花色。
+
+```
+>  sadd deck C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 CJ CQ CK
+   D1 D2 D3 D4 D5 D6 D7 D8 D9 D10 DJ DQ DK H1 H2 H3
+   H4 H5 H6 H7 H8 H9 H10 HJ HQ HK S1 S2 S3 S4 S5 S6
+   S7 S8 S9 S10 SJ SQ SK
+   (integer) 52
+```
+
+现在，我们想要给每个玩家 5 张牌。SPOP 命令删除一个随机元素，把它返回给客户端，因此它是完全合适的操作。
+
+但是，如果我们对我们的牌直接调用它，在下一盘我们就需要重新填满这副牌。开始，我们可以复制 deck 键中的内容，并放入 game:1:deck 键中。
+
+这是通过 SUNIONSTORE 实现的，它通常用于对多个集合取并集，并把结果存入另一个 set 中。但是，因为一个 set 的并集就是它本身，我可以这样复制我的牌：
+
+
+
+
+
+
+
+
+
+
+
 
 
 
