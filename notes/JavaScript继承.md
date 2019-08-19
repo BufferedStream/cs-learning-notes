@@ -267,6 +267,8 @@ function object(o) {
 }
 ```
 
+
+
 &emsp;&emsp;在 object() 函数内部，先创建了一个临时性的构造函数，然后将传入的对象作为这个构造函数的原型，最后返回了这个临时类型的一个新实例。从本质上讲， object() 对传入其中的对象执行了一次浅复制。来看下面的例子。
 
 ```js
@@ -285,6 +287,8 @@ p2.friends.push("johns");
 
 console.log(person.friends);	//["lisi", "wangwu", "zhaoliu", "jerry", "johns"]
 ```
+
+
 
 &emsp;&emsp;克罗克福德主张的这种原型式继承，要求你必须有一个对象可以作为另一个对象的基础。如果有这么一个对象的话，可以把它传递给 object() 函数，然后再根据具体需求对得到的对象加以修改即可。在这个例子中，可以作为另一个对象基础的是 person 对象，于是我们把它传入到 object() 函数中，然后改函数就会返回一个新对象。这个新对象将 person 作为原型，所以它的原型中就包含一个基本类型值属性和一个引用类型属性。这意味着 person.friends 不仅属于 person 所有，而且也会被 p1 和 p2 共享。实际上，这就相当于又创建了 person 对象的两个副本。
 
@@ -307,6 +311,8 @@ p2.friends.push("johns");
 console.log(person.friends);	//["lisi", "wangwu", "zhaoliu", "jerry", "johns"]
 ```
 
+
+
 &emsp;&emsp;Object.create() 方法的第二个参数与 Object.defienProperties() 方法的第二个参数格式相同：每个属性都是通过自己的描述符定义的。以这种方式指定的任何属性都会覆盖原型对象上的同名属性。例如：
 
 ```js
@@ -323,6 +329,8 @@ var p1 = Object.create(person, {
 
 console.log(p1.name);	//"tom"
 ```
+
+
 
 &emsp;&emsp;在没有必要兴师动众地创建构造函数，而只想让一个对象与另一个对象保持类似的情况下，原型式继承是完全可以胜任地。不过别忘了，包含引用类型值的属性始终都会共享相应的值，就像使用原型模式一样。
 
@@ -342,9 +350,11 @@ function createAnother(original) {
 }
 ```
 
+
+
 &emsp;&emsp;在这个例子中， createAnother() 函数接受了一个参数，也就是将要作为新对象基础的对象。然后，把这个对象（original）传递给 object() 函数，将返回的结果赋值给 clone。再为 clone 对象添加一个新方法 sayHi()，最后返回 clone 对象。可以像下面这样来使用 createAnother() 函数：
 
-```
+```js
 var person = {
 	name: "zhangsan",
 	friends: ["lisi", "wangwu", "zhaoliu"]
@@ -354,6 +364,8 @@ var p1 = createAnother(person);
 p1.sayHi();	//"hi"
 ```
 
+
+
 &emsp;&emsp;这个例子中的代码基于 person 返回了一个新对象—— p1。新对象不仅具有 person 的所有属性和方法，而且还有自己的 sayHi() 方法。
 
 &emsp;&emsp;在主要考虑对象而不是自定义类型和构造函数的情况下，寄生式继承也是一种有用的模式。前面示范继承模式时使用的 object() 函数不是必需的；任何能够返回新对象的函数都适用于此模式。
@@ -362,3 +374,85 @@ p1.sayHi();	//"hi"
 
 
 
+#### 6.寄生组合式继承
+
+​		前面说过，组合继承是 JavaScript 最常用的继承模式；不过，它也有自己的不足。组合继承最大的问题就是无论什么情况下，都会调用两次超类型构造函数：一次是在创建子类型原型的时候，另一次是在子类型构造函数内部。没错，子类型最终会包含超类型对象的全部实例属性，但我们不得不在调用子类型构造函数时重写这些属性。再来看一看下面组合继承的例子。
+
+```js
+function SuperType(name) {
+	this.name = name;
+	this.colors = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function() {
+	console.log(this.name);
+};
+
+function SubType(name, age) {
+	SuperType.call(this.name);			//第二次调用 SuperType()
+	this.age = age;
+}
+
+SubType.prototype = new SuperType();	//第一次调用 SuperType()
+SubType.prototype.constructor = SubType;
+SubType.prototype.SayAge = function() {
+	console.log(this.age);
+};
+```
+
+​		
+
+​		添加注释的行中是调用 SuperType 构造函数的代码。在第一次调用 SuperType 构造函数时， SubType.prototype 会得到两个属性： name 和 colores；它们都是 SuperType 的实例属性，只不过现在位于 SubType 的原型中。当调用 SubType 构造函数时，又会调用一次 SuperType 构造函数，这一次又在新对象上创建了实例属性 name 和 colors。于是，这两个属性就屏蔽了原型中的两个同名属性。下图展示了上述过程。
+
+
+
+
+
+​		如上图所示，有两组 name 和 colors 属性：一组在实例上，一组在 SubType 原型中。这就是调用两次 SuperType 构造函数的结果。好在我们已经找到了解决这个问题的方法——寄生组合式继承。
+
+​		所谓寄生组合式继承，即通过借用构造函数来继承属性，通过原型链的混成形式来继承方法。其背后的基本思路是：不必为了指定子类型的原型而调用超类型的构造函数，，我们所需要的无非就是超类型原型的一个副本而已。本质上，就是使用寄生式继承来继承超类型的原型，然后再将结果指定给子类型的原型。寄生组合式继承的基本模式如下所示。
+
+```js
+function object(o) {
+	function F() {}
+	F.prototype = o;
+	return new F();
+}
+
+function inheritPrototype(subType, superType) {
+	var prototype = object(superType.prototype);	//创建对象
+	prototype.constructor = subType;				//增强对象
+	subType.prototype = prototype;					//指定对象
+}
+```
+
+​		
+
+​		这个示例中的 inheritPtototype() 函数实现了寄生组合式继承的最简单形式。这个函数接收两个参数：子类型构造函数和超类型构造函数。在函数内部，第一步是创建超类型原型的一个副本。第二步是为创建的副本添加 constructor 属性，从而弥补因重写原型而失去的默认的 constructor 属性。最后一步，将新创建的对象（即副本）赋值给子类型的原型。这样，我们就可以用调用 inheritPrototype() 函数的语句，去替换前面例子中为子类型原型赋值的语句了。例如：
+
+```js
+function SuperType(name) {
+	this.name = name;
+	this.colors = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function() {
+	console.log(this.name);
+};
+
+function SubType(name, age) {
+	SuperType.call(this, name);
+	
+	this.age = age;
+}
+
+inheritPrototype(SubType, SuperType);
+
+SubType.prototype.sayAge = function() {
+	console.log(this.age);
+};
+```
+
+​		这个例子的高效率体现在它只调用了一次 SuperType 构造函数，并且因此避免了在 SubType.prototype 上面创建不必要的、多余的属性。与此同时，原型链还能保持不变；因此，还能够正常使用 instanceof 和 isPrototypeOf()。开发人员普遍认为寄生组合式继承是引用类型最理想的继承范式。
+
+​		YUI 的 YAHOO.lang.extend() 方法采用了寄生式组合继承，从而让这种模式首次出现在了一个应用非常广泛的 JavaScript 库中。
