@@ -55,18 +55,145 @@ var result = compare(5, 10);
 ​		在另一个函数内部定义的函数会将包含函数（即外部函数）的活动对象添加到它的作用域链中。因此，在 createComparisionFunction() 函数内部定义的匿名函数的作用域链中，实际上将会包含外部函数 createComparisionFunction() 的活动对象。下图展示了当下列代码执行时，包含函数与内部匿名函数的作用域链。
 
 ```js
-var compare = createComparisionFunction("name");
+var compare = createComparisonFunction("name");
 var result = compare({name: "zhangsan"}, {name: "lisi"});
 ```
 
 ​		
 
-​		如上图所示，在匿名函数从 createComparisionFunction() 中被返回后，它的作用域链被初始化为包含 createComparisionFunction() 函数的活动对象和全局变量对象（在 compare() 函数中可以访问到 createComparisionFunction() 函数中的）。这样，匿名函数就可以访问在 createComparisionFunction() 中定义的所有变量。更为重要的是， createComparisionFunction() 函数在执行完毕后，其活动对象也不会被销毁，因为匿名函数的作用域链仍然在引用这个活动对象。换句话说，当 createComparisionFunction() 函数返回后，其执行环境的作用域链会被销毁，但它的活动对象仍然会留在内存中；直到匿名函数被销毁后， createComparisionFunction() 的活动对象才会被销毁，例如：
+​		如上图所示，在匿名函数从 createComparisionFunction() 中被返回后，它的作用域链被初始化为包含 createComparisionFunction() 函数的活动对象和全局变量对象（在 compare() 函数中可以访问到 createComparisionFunction() 函数中的 propertyName 参数）。这样，匿名函数就可以访问在 createComparisionFunction() 中定义的所有变量。更为重要的是， createComparisionFunction() 函数在执行完毕后，其活动对象也不会被销毁，因为匿名函数的作用域链仍然在引用这个活动对象。换句话说，当 createComparisionFunction() 函数返回后，其执行环境的作用域链会被销毁，但它的活动对象仍然会留在内存中；直到匿名函数被销毁后， createComparisionFunction() 的活动对象才会被销毁，例如：
 
-```
+```js
 //创建函数
-var compareNames = createCom
+var compareNames = createComparisonFunction("name");
+
+//调用函数
+var result = compareNames({name: "zhangsan"}, {name: "lisi"});
+
+//解除对匿名函数的引用（以便释放内存）
+compareNames = null;
 ```
+
+
+
+​		首先，创建的比较函数被保存在变量 compareNames 中。而通过将 compareNames 设置为等于 null 解除该函数的引用，就等于通知垃圾回收例程将其清除。随着匿名函数的作用域链被销毁，其他作用域（除了全局作用域）也都可以安全地销毁了。调用 compareNames() 的过程中产生的作用域链之间的关系与调用 compare() 函数一样。
+
+​		由于闭包会携带包含它的函数的作用域，因此会比其他函数占用过多的内存。过度使用闭包可能会导致内存占用过多，我们建议读者只在绝对必要时再考虑使用闭包。虽然像 V8 等优化后的 JavaScript 引擎会尝试回收被闭包占用的内存，但请大家还是要慎重使用闭包。
+
+
+
+##### 1.1 闭包与变量
+
+​		作用域链的这种配置机制引出了一个值得注意的副作用，即闭包只能取得包含函数中任何变量的最后一个值。别忘了闭包所保存的是整个变量对象，而不是某个特殊的变量。下面这个例子可以清晰地说明这个问题。
+
+```js
+function createFunctions() {
+	var result = new Array();
+	
+	for (var i=0; i<10; i++) {
+		result[i] = function() {
+			return i;
+		};
+	}
+	
+	return result;
+}
+```
+
+​		这个函数会返回一个函数数组。表面上看，似乎每个函数都应该返回自己的索引值，即位置 0 的函数返回 0，位置 1 的函数返回 1，以此类推。但实际上，每个函数都返回 10。因为每个函数的作用域链中都保存着 createFunctions() 函数的活动对象，所以它们引用的都是同一个变量 i。当 createFunctions() 函数返回后，变量 i 的值是 10，此时每个函数都引用这保存变量 i 的同一个变量对象，所以在每个函数内部 i 的值都是 10。但是，我们可以通过创建另一个匿名函数强制让闭包的行为符合预期，如下所示。
+
+```js
+function createFunctions() {
+	var result = new Array();
+	
+	for (var i=0; i<10; i++) {
+		result[i] = function(num) {
+			return function() {
+            	return num;    
+            };
+		}(i);
+	}
+	
+	return result;
+}
+```
+
+​		在重写了前面的 createFunctions() 函数后，每个函数就会返回各自不同的索引值了。在这个版本中，我们没有直接把闭包赋值给数组，而是定义了一个匿名函数，并将立即执行该匿名函数的结果赋给数组。这里的匿名函数有一个参数 num，也就是最终的函数要返回的值。在调用每个匿名函数时，我们传入了变量 i。由于函数参数是按值传递的，所以就会将变量 i 的当前值复制给参数 num。而在这个匿名函数内部，又创建并返回了一个访问 num 的闭包。这样一来， result 数组中的每个函数都有自己 num 变量的一个副本，因此就可以返回各自不同的数值了。
+
+
+
+##### 1.2 关于 this 对象
+
+​		在闭包中使用 this 对象也可能会导致一些问题。我们知道， this 对象是在运行时基于函数的执行环境绑定的：在全局函数中， this 等于 window，而当函数被作为某个对象的方法调用时， this 等于那个对象。不过，匿名函数的执行环境具有全局性，因此其 this 对象通常指向 window。但有时候由于编写闭包的方式不同，这一点可能不会那么明显。下面来看一个例子。
+
+```js
+var name = "The Window";
+
+var object = {
+	name : "My Object",
+	
+	getNameFunc : function() {
+		return function() {
+			return this.name;
+		};
+	}
+};
+
+console.log(object.getNameFunc()());	//"The Window"(在非严格模式下)，注意需要两组括号
+```
+
+​		
+
+​		以上代码先创建了一个全局变量 name，又创建了一个包含 name 属性的对象。这个对象还包含了一个方法——getNameFunc()，它返回一个匿名函数，而匿名函数又返回 this.name。由于 getNameFunc() 返回一个函数，因此调用 obejct.getNameFunc()() 就会立即调用它返回的函数，结果就是返回一个字符串。然而，这个例子返回的字符串是 “The Window”，即全局 name 变量的值。为什么匿名函数没有取得其包含作用域（或外部作用域）的 this 对象呢？
+
+​		前面曾经提到过，每个函数在被调用时，其活动对象都会自动取得两个特殊变量： this 和 arguments。内部函数在搜索这两个变量时，只会搜索到其活动对象为止，因此永远不可能直接访问外部函数中的这两个变量。不过，把外部作用域中的 this 对象保存在一个闭包能够访问到的变量里，就可以让闭包访问该对象了，如下所示。
+
+```js
+var name = "The Window";s
+
+var object = {
+	name : "My Object",
+	
+	getNameFunc : function() {
+        var that = this;
+		return function() {
+			return that.name;
+		};
+	}
+};
+
+console.log(object.getNameFunc()());	//"My Object"
+```
+
+​		把 this 对象赋值给 that 变量是一种常用的做法。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

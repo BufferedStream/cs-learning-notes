@@ -404,9 +404,13 @@ SubType.prototype.SayAge = function() {
 
 ​		添加注释的行中是调用 SuperType 构造函数的代码。在第一次调用 SuperType 构造函数时， SubType.prototype 会得到两个属性： name 和 colores；它们都是 SuperType 的实例属性，只不过现在位于 SubType 的原型中。当调用 SubType 构造函数时，又会调用一次 SuperType 构造函数，这一次又在新对象上创建了实例属性 name 和 colors。于是，这两个属性就屏蔽了原型中的两个同名属性。下图展示了上述过程。
 
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF1.jpg"/>
+</div>
 
-
-
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E7%BB%A7%E6%89%BF1.jpg"/>
+</div>
 
 ​		如上图所示，有两组 name 和 colors 属性：一组在实例上，一组在 SubType 原型中。这就是调用两次 SuperType 构造函数的结果。好在我们已经找到了解决这个问题的方法——寄生组合式继承。
 
