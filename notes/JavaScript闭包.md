@@ -47,6 +47,10 @@ var result = compare(5, 10);
 ​		以上代码先定义了 compare() 函数，然后又在全局作用域中调用了它。当第一次调用 compare() 时，会创建一个包含 this、arguments、value1 和 value2 的活动对象。全局执行环境的变量对象（包含 this、 result 和 compare）在compare() 执行环境的作用域链中则处于第二位。下图展示了包含上述关系的 compare() 函数执行时的作用域链。
 
 
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%851.jpg"/>
+</div>
+
 
 ​		后台的每个执行环境都有一个表示变量的对象——变量对象。全局环境的变量对象始终存在，而像 compare() 函数这样的局部环境的变量对象，则只在函数执行的过程中存在。在创建 compare() 函数时，会创建一个预先包含全局变量对象的作用域链，这个作用域链被保存在内部的 [[Scope]] 属性中。当调用 compare() 函数时，会为函数创建一个执行环境，然后通过复制函数的 [[Scope]] 属性中的对象构建起执行环境的作用域链。此后，又有一个活动对象（在此作为变量对象使用）被创建并被推入执行环境作用域链的前端。对于这个例子中 compare() 函数的执行环境而言，其作用域链中包含两个变量对象：本地活动对象和全局变量对象。显然，作用域链本质上是一个指向变量对象的指针列表，它只引用但不实际包含变量对象。
 
@@ -54,12 +58,22 @@ var result = compare(5, 10);
 
 ​		在另一个函数内部定义的函数会将包含函数（即外部函数）的活动对象添加到它的作用域链中。因此，在 createComparisionFunction() 函数内部定义的匿名函数的作用域链中，实际上将会包含外部函数 createComparisionFunction() 的活动对象。下图展示了当下列代码执行时，包含函数与内部匿名函数的作用域链。
 
+
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%852.jpg"/>
+</div>
+
+
 ```js
 var compare = createComparisonFunction("name");
 var result = compare({name: "zhangsan"}, {name: "lisi"});
 ```
+		
 
-​		
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%853.jpg"/>
+</div>
+
 
 ​		如上图所示，在匿名函数从 createComparisionFunction() 中被返回后，它的作用域链被初始化为包含 createComparisionFunction() 函数的活动对象和全局变量对象（在 compare() 函数中可以访问到 createComparisionFunction() 函数中的 propertyName 参数）。这样，匿名函数就可以访问在 createComparisionFunction() 中定义的所有变量。更为重要的是， createComparisionFunction() 函数在执行完毕后，其活动对象也不会被销毁，因为匿名函数的作用域链仍然在引用这个活动对象。换句话说，当 createComparisionFunction() 函数返回后，其执行环境的作用域链会被销毁，但它的活动对象仍然会留在内存中；直到匿名函数被销毁后， createComparisionFunction() 的活动对象才会被销毁，例如：
 
