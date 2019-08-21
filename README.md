@@ -10,7 +10,7 @@
 - JavaScript高级程序设计（第3版）
 - http://www.redis.cn/documentation.html
 - https://redis.io/documentation
- 
+
 ## Java8
 - [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
 - [lambda表达式](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/lambda.md)
@@ -47,6 +47,7 @@
 - [JavaScript执行环境及作用域](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83%E5%8F%8A%E4%BD%9C%E7%94%A8%E5%9F%9F.md)
 - [JavaScript创建对象](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1.md)
 - [JavaScript继承](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1.md)
+- [JavaScript闭包](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JavaScript%E9%97%AD%E5%8C%85.md)
 
 ## Redis
 - [Redis数据结构](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.md)
