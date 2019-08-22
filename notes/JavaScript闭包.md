@@ -68,7 +68,7 @@ var result = compare(5, 10);
 var compare = createComparisonFunction("name");
 var result = compare({name: "zhangsan"}, {name: "lisi"});
 ```
-		
+
 
 <div align=center>
 	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%853.jpg"/>
@@ -163,7 +163,7 @@ console.log(object.getNameFunc()());	//"The Window"(在非严格模式下)，注
 ​		前面曾经提到过，每个函数在被调用时，其活动对象都会自动取得两个特殊变量： this 和 arguments。内部函数在搜索这两个变量时，只会搜索到其活动对象为止，因此永远不可能直接访问外部函数中的这两个变量。不过，把外部作用域中的 this 对象保存在一个闭包能够访问到的变量里，就可以让闭包访问该对象了，如下所示。
 
 ```js
-var name = "The Window";s
+var name = "The Window";
 
 var object = {
 	name : "My Object",
@@ -183,21 +183,95 @@ console.log(object.getNameFunc()());	//"My Object"
 
 
 
+#### 2.模仿块级作用域
+
+​		如前所述， JavaScript 没有块级作用域的概念。这意味着在块语句中定义的变量，实际上是在包含函数中而非语句中创建的，来看下面的例子。
+
+```js
+function outputNumbers(count) {
+	for (var i=0; i<count; i++) {
+		console.log(i);
+	}
+	console.log(i);		//计数
+}
+```
+
+​		这个函数中定义了一个 for 循环。在 Java、C++ 等语言中，变量 i 只会在 for 循环的语句块中有定义，循环一旦结束，变量 i 就会被销毁。可是在 JavaScript 中，变量 i 是定义在 outputNumbers() 的活动对象中的，因此从它有定义开始，就可以在函数内部随处访问它。即使像下面这样错误地重新声明同一个变量，也不会改变它的值。
+
+```js
+function outputNumbers(count) {
+	for (var i=0; i<count; i++) {
+		console.log(i);
+	}
+	
+	var i;
+	console.log(i);		//计数
+}
+```
+
+​		
+
+​		JavaScript 从来不会告诉你是否多次声明了同一个变量：遇到这种情况，它只会对后续的声明视而不见（不过，它会执行后续声明中的变量初始化）。匿名函数可以用来模仿块级作用域并避免这个问题。
+
+​		用作块级作用域（通常称为私有作用域）的匿名函数的语法如下所示。
+
+```js
+(function(){
+	//这里是块级作用域
+})();
+```
 
 
 
+​		无论在什么地方，只要临时需要一些变量，就可以使用私有作用域，例如：
+
+```js
+function outputNumbers(count) {
+	(function() {
+		for (var i=0; i<count; i++) {
+			console.log(i);
+		}
+	})();
+	
+	console.log(i);		//计数
+}
+```
 
 
 
+​		在这个重写后的 outputNumbers() 函数中，我们在 for 循环外部插入了一个私有作用域。在匿名函数中定义的任何变量，都会在执行结束时被销毁。因此，变量 i 只能在循环中使用，使用后即被销毁。而在私有作用域中能够访问变量 count，是因为这个匿名函数是一个闭包，它能够访问包含作用域中的所有变量。
+
+​		这种技术经常在全局作用域中被用在函数外部，从而限制向全局作用域中添加过多的变量和函数。一般来说，我们都应该尽量少向全局作用域中添加变量和函数。在一个由很多开发人员共同参与的大型应用程序中，过多的全局变量和函数很容易导致命名冲突。而通过创建私有作用域，每个开发人员既可以使用自己的变量，又不必担心搞乱全局作用域。例如：
+
+```js
+(function() {
+
+	var now = new Date();
+    for (now.getMonth() == 0 && now.getDate() == 1) {
+    	console.log("Happy new year!");
+    }
+    
+})();
+```
 
 
 
+​		把上面这段代码放在全局作用域中，可以用来确定哪一天是 1 月 1 日；如果到了这一天，就会向用户显示一条祝贺新年的消息。其中的变量 now 现在是匿名函数中的局部变量，而我们不必在全局作用域中创建它。
+
+​		这种做法可以减少闭包占用内存的问题，因为没有指向匿名函数的引用。只要函数执行完毕，姐可以立即销毁其作用域链了。
 
 
 
+#### 3.私有变量
 
+​		严格来讲，JavaScript 中没有私有成员的概念；所有对象属性都是公有的。不过，倒是有一个私有变量的概念。任何在函数中定义的变量，都可以认为是私有变量，因为不能在函数的外部访问这些变量。私有变量包括函数的参数、局部变量和在函数内部定义的其他函数。来看下面的例子：
 
-
+```js
+function add(num1, num2) {
+	var sum = num1 + num2;
+	return sum;
+}
+```
 
 
 
