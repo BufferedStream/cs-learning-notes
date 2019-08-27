@@ -2,3 +2,39 @@
 
 lambda表达式访问外部作用域变量的权限与匿名内部类的对象非常类似。你可以正常访问作用域外的常量（final variables）、实例变量以及静态变量。
 
+
+
+#### 访问局部变量
+
+我们可以直接在 lambda 表达式中访问外部的局部变量：
+
+```java
+final int num = 1;
+Converter<Integer, String> stringConverter = (from) -> String,valueOf(from + num);
+
+StringConverter.convert(2);	//3
+```
+
+
+
+但是和匿名内部类对象不同的是，这里的变量 num 可以不用声明为 final，该代码同样正确。（ java 8 的匿名内部类对象的语法和这个一致了！）
+
+```java
+int num = 1;
+Converter<Integer, String> stringConverter =
+ (from) -> String.valueOf(from + num);
+
+stringConverter.convert(2); // 3
+```
+
+
+
+不过这里的 num 不能被后面的代码修改（即隐形的具有 final 的语义），例如下面的就无法编译：
+
+```java
+int num = 1;
+Converter<Integer, String> stringConverter =
+ (from) -> String.valueOf(from + num);
+num = 3;//在lambda表达式中试图修改num同样是不允许的。
+```
+
