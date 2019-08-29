@@ -42,9 +42,9 @@ num = 3;	//在lambda表达式中试图修改num同样是不允许的。
 
 #### 访问字段和静态变量
 
-与局部变量相比，我们对 lambda 表达式中的实例字段和静态变量都有读写访问权限。该行为和匿名内部类对象是一致的。
+与局部变量相比，我们对 lambda 表达式中的实例字段和静态变量都有读写访问权限。这特性和匿名内部类对象是一致的。
 
-```js
+```java
 class Lambda4 {
 	static int outerStaticNum;
 	int outerNum;
@@ -65,25 +65,13 @@ class Lambda4 {
 
 
 
+#### 访问默认接口方法
 
+还记得第一节中的 formula 示例吗？ `Formula` 接口定义了一个默认方法 `sqrt`，可以从包含匿名对象的每个 formula 实例访问该方法。 这不适用于lambda表达式。
 
+无法从 lambda 表达式中访问默认方法，故以下代码无法编译：
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```java
+Formula formula = (a) -> sqrt(a * 100);
+```
 
