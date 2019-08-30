@@ -1,6 +1,6 @@
 ## Lambda Scopes
 
-lambda表达式访问外部作用域变量的权限与匿名内部类的对象非常类似。你可以正常访问作用域外的常量（final variables）、实例变量以及静态变量。
+lambda 表达式访问外部作用域变量的权限与匿名内部类的对象非常类似。你可以正常访问作用域外的常量（final variables）、实例变量以及静态变量。
 
 
 
@@ -67,7 +67,7 @@ class Lambda4 {
 
 #### 访问默认接口方法
 
-还记得第一节中的 formula 示例吗？ `Formula` 接口定义了一个默认方法 `sqrt`，可以从包含匿名对象的每个 formula 实例访问该方法。 这不适用于lambda表达式。
+还记得第一节中的 formula 示例吗？ `Formula` 接口定义了一个默认方法 `sqrt`，可以从包含匿名对象的每个 formula 实例访问该方法。 这不适用于 lambda 表达式。
 
 无法从 lambda 表达式中访问默认方法，故以下代码无法编译：
 
