@@ -10,6 +10,7 @@
 - JavaScript高级程序设计（第3版）
 - http://www.redis.cn/documentation.html
 - https://redis.io/documentation
+- https://zh.wikipedia.org/wiki/Wikipedia:首页
 
 ## Java8
 - [接口的默认方法](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95.md)
@@ -52,3 +53,6 @@
 ## Redis
 - [Redis数据结构](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.md)
 
+
+## Java 虚拟机
+- [JIT 与 HotSpot](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JIT%20%E4%B8%8E%20HotSpot.md)
