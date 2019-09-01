@@ -29,7 +29,9 @@ To paraphrase, conventional compilers build the whole program as an EXE file BEF
 Java 虚拟机的一般编译流程如下图所示：
 
 
-
+<div align=center>
+	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/JIT%20%E5%92%8C%20HotSpot1.jpg"/>
+</div>
 
 
 **HotSpot**的正式发布名称为"Java HotSpot Performance Engine"，是 Java 虚拟机的一个实现，包含了服务器版和桌面应用程序版，现时由 Oracle 维护并发布。它利用 JIT 及自适应优化技术（自动查找性能热点并进行动态优化，这也是 HotSpot 名字的由来）来提高性能。
