@@ -1,10 +1,10 @@
 ## Git的基本命令
 
-Git最常使用得6个命令如下：
+Git 最常使用的 6 个命令如下：
 
 ![img](http://www.ruanyifeng.com/blogimg/asset/2015/bg2015120901.png)
 
-下面是我整理的常用Git命令清单。git专用名词的译名如下。
+下面是我整理的常用 Git 命令清单。 git 专用名词的译名如下。
 
 - Workspace：工作区
 - Index / stage：暂存区
@@ -30,7 +30,7 @@ $ git init [project-name]
 
 ### 二、配置
 
-Git的设置文件为 .gitconfig， 它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。
+Git 的设置文件为 .gitconfig， 它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。
 
 ```
 # 显示当前的Git配置
