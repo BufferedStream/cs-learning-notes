@@ -56,3 +56,4 @@
 
 ## Java 虚拟机
 - [JIT 与 HotSpot](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JIT%20%E4%B8%8E%20HotSpot.md)
+- [Java 内存区域与内存溢出异常](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8.md)
