@@ -98,7 +98,121 @@
 
 ##### 3.1  对象的创建
 
-​		Java 是一门面向对象的编程语言，在 Java 程序运行过程中无时无刻都有对象被创建出来。在语言层面上，创建对象（例如克隆、反序列化）通常仅仅是一个 new 关键字而已，而在虚拟机中，对象（文中讨论的对象限于普通 Java 对象，不包括数据和 Class 对象等）的创建又是怎样一个过程呢？		
+​		Java 是一门面向对象的编程语言，在 Java 程序运行过程中无时无刻都有对象被创建出来。在语言层面上，创建对象（例如克隆、反序列化）通常仅仅是一个 new 关键字而已，而在虚拟机中，对象（文中讨论的对象限于普通 Java 对象，不包括数组和 Class 对象等）的创建又是怎样一个过程呢？		
+
+​		虚拟机遇到一条 new 指令时，首先将去检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类加载过程。
+
+​		在类加载检查通过后，接下来虚拟机将为新生对象分配内存。对象所需内存的大小在类加载完成后便可完全确定，为对象分配空间的任务等同于把一块确定大小的内存从 Java 堆中划分出来。假设 Java 堆中内存是绝对规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，那所谓分配内存就仅仅是把那个指针向空闲空间那边挪动一段与对象大小相等的距离，这种分配方式称为 “指针碰撞”（Bump the Pointer）。如果 Java 堆中的内存并不是规整的，已使用的内存和空闲的内存相互交错，那就没有办法简单地进行指针碰撞了，虚拟机就必须维护一个列表，记录上哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录，这种分配方式称为 “空闲列表”（Free List）。选择哪种分配方式由 Java 堆是否规整决定，而 Java 堆是否规整又由所采用的垃圾收集器是否带有压缩整理功能决定。因此，在使用 Serial、PartNew 等带 Compact 过程的收集器时，系统采用的分配算法时指针碰撞，而使用 CMS 这种基于 Mark-Sweep 算法的收集器时，通常采用空闲列表。
+
+​		除如何划分可用空间之外，还有另外一个需要考虑的问题是在虚拟机中创建对象是非常频繁的行为， 即使是仅仅修改一个指针所指向的位置，在并非情况下也并不是线程安全的，可能出现正在给对象 A 分配内存，指针还没来得及修改，对象 B 又同时使用了原来的指针来分配内存的情况。解决这个问题由两种方案，一种是堆分配内存空间的动作进行同步处理——实际上虚拟机采用 CAS 配上失败重试的方式保证更新操作的原子性：另一种是把内存分配的动作按照线程划分在不同的空间之中进行，即每个线程在 Java 堆中预先分配一小块内存，称为本地线程分配缓冲（Thread Loca Allocation Buffer，TLAB）。哪个线程要分配内存，就在哪个线程的 TLAB 上分配，只有 TLAB 用完并分配新的 TLAB 时，才需要同步锁定。虚拟机是否使用 TLAB，可以通过 -XX:+/-UseTLAB 参数来设定。
+
+​		内存分配完成后，虚拟机需要将分配到的内存空间都初始化为零值（不包括对象头），如果使用 TLAB，这一工作过程也可以提前至 TLAB 分配时进行。这一步操作保证了对象的实例字段在 Java 代码中可以不赋初始值就直接使用，程序能访问到这些字段的数据类型所对应的零值。
+
+​		接下来，虚拟机要对对象进行必要的设置，例如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的 GC 分代年龄等信息。这些信息存放在对象的对象头（Object Header）之中。根据虚拟机当前的运行状态的不同，如是否启用偏向锁等，对象头会有不同的设置方式。
+
+​		在上面工作都完成之后，从虚拟机的视角来看，一个新的对象已经产生了，但从 Java 程序的视角来看，对象创建才刚刚开始——<init> 方法还没有执行，所有的字段还都为零。所以，一般来说（由字节码中是否跟随 invokespecail 指令所决定），执行 new 指令之后会接着执行 <init> 方法，把对象按照程序员的意愿进行初始化，这样一个真正可用的对象才算完全产生出来。
+
+​		下面的代码是 HotSpot 虚拟机 bytecodeInterpreter.cpp 中的代码片段（这个解释器实现很少有机会实际使用，因为大部分普通上都使用模板解释器；当代码通过 JIT 编译器执行时差异就更大了。不过，这段代码用于了解 HotSpot 的运作过程是没有什么问题的）。
+
+​		HotSpot 解释器的代码片段：
+
+```c++
+//确保常量池中存放的是已解释的类
+if（!constants-＞tag_at（index）.is_unresolved_klass()）{
+    //断言确保是klassOop和instanceKlassOop（这部分下一节介绍）
+    oop entry=（klassOop）*constants-＞obj_at_addr（index）；
+    assert（entry-＞is_klass()，"Should be resolved klass"）；
+    klassOop k_entry=（klassOop）entry；
+    assert（k_entry-＞klass_part()-＞oop_is_instance()，"Should be instanceKlass"）；
+    instanceKlass * ik=（instanceKlass*）k_entry-＞klass_part()；
+    //确保对象所属类型已经经过初始化阶段
+    if（ik-＞is_initialized()＆＆ik-＞can_be_fastpath_allocated()）
+    {
+        //取对象长度
+        size_t obj_size=ik-＞size_helper()；
+        oop result=NULL；
+        //记录是否需要将对象所有字段置零值
+        bool need_zero=!ZeroTLAB；
+        //是否在TLAB中分配对象
+        if（UseTLAB）{
+            result=（oop）THREAD-＞tlab().allocate（obj_size）；
+        }
+        if（result==NULL）{
+            need_zero=true；
+            //直接在eden中分配对象
+            retry:
+            HeapWord * compare_to=*Universe:heap()-＞top_addr()；
+            HeapWord * new_top=compare_to+obj_size；
+            /*cmpxchg是x86中的CAS指令，这里是一个C++方法，通过CAS方式分配空间，如果并发失败，
+            转到retry中重试，直至成功分配为止*/
+            if（new_top＜=*Universe:heap()-＞end_addr()）{
+                if（Atomic:cmpxchg_ptr（new_top,Universe:heap()-＞top_addr()，compare_to）!=compare_to）{
+                    goto retry；
+                }
+                result=（oop）compare_to；
+            }
+        }
+        if（result!=NULL）{
+            //如果需要，则为对象初始化零值
+            if（need_zero）{
+                HeapWord * to_zero=（HeapWord*）result+sizeof（oopDesc）/oopSize；
+                obj_size-=sizeof（oopDesc）/oopSize；
+                if（obj_size＞0）{
+                    memset（to_zero，0，obj_size * HeapWordSize）；
+                }
+            }
+            //根据是否启用偏向锁来设置对象头信息
+            if（UseBiasedLocking）{
+                result-＞set_mark（ik-＞prototype_header()）；
+            }else{
+                result-＞set_mark（markOopDesc:prototype()）；
+            }
+            result-＞set_klass_gap（0）；
+            result-＞set_klass（k_entry）；
+            //将对象引用入栈，继续执行下一条指令
+            SET_STACK_OBJECT（result，0）；
+            UPDATE_PC_AND_TOS_AND_CONTINUE（3，1）；
+        }
+    }
+}
+```
+
+​		
+
+##### 3.2  对象的内存布局
+
+​		在 HotSpot 虚拟机中，对象在内存中存储的布局可以分为 3 块区域：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。
+
+​		HotSpot 虚拟机的对象头包括两部分信息，第一部分用于存储对象自身的运行时数据，如哈希码（HashCode）、GC 分代年龄、锁状态标志、线程持有的锁、偏向线程 ID、偏向时间戳等，这部分数据的长度在 32 位和 64 位的虚拟机（未开启压缩指针）中分别为 32bit 和  64bit，官方称它为 “Mark Word”。对象需要存储的运行时数据很多，其实已经超出了 32 位、 64 位 Bitmap 结构所能记录的限度，但是对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到虚拟机的空间效率， Mark Word 被设计成一个非固定的数据结构以便在极小的空间内存储尽量多的信息，它会根据对象的状态复用自己的存储空间。例如，在 32 位的 HotSpot虚拟机中，如果对象处于未被锁定的状态下，那么 Mark Word 的 32bit 空间中的 25bit 用于存储对象哈希码， 4bit 用于存储对象分代年龄， 2bit 用于存储锁标志位，1bit 固定为 0，而在其他状态（轻量级锁定、重量级锁定、 GC 标记、可偏向）下对象的存储内容见下表。
+
+​		HotSpot 虚拟机对象头 Mark Word：
+
+![1568645444938](C:\Users\26450\AppData\Roaming\Typora\typora-user-images\1568645444938.png)
+
+
+
+​		对象头的另外一部分是类型指针，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。并不是所有的虚拟机实现都必须在对象数据中保留类型指针，换句话说，查找对象的元数据信息并不一定要经过对象本身，另外，如果对象是一个 Java 数组，那在对象头中还必须有一块用于记录数据长度的数据，因为虚拟机可以通过普通 Java 对象的元数据信息确定 Java 对象的大小，但是从数组的元数据中却无法确定数组的大小。
+
+​		以下为 HotSpot 虚拟机 markOop.cpp 中的代码（注释）片段，它描述了 32bit 下 Mark Word 的存储状态。
+
+```c++
+// Bit-format of an object header (most significant first, big endian layout below):
+//
+//  32 bits:
+//  --------
+//  hash:25 ------------>| age:4    biased_lock:1 lock:2 (normal object)
+//  JavaThread*:23 epoch:2 age:4    biased_lock:1 lock:2 (biased object)
+//  size:32 ------------------------------------------>| (CMS free block)
+//  PromotedObject*:29 ---------->| promo_bits:3 ----->| (CMS promoted object)
+```
+
+
+
+​		接下来的示例数据部分是对象真正存储的有效信息，也是在程序代码中所定义的各种类型的字段内容。无论是从父类继承下来的，还是在子类中定义的，都需要记录起来。这部分的存储顺序会受到虚拟机分配策略参数（FieldsAllocationStyle）和字段在 Java 源码中定义顺序的影响。 HotSpot 虚拟机默认的分配策略为 longs/doubles、ints、shorts/chars、bytes/booleans、oops（Ordinary Object Pointers），从分配策略中可以看出，相同宽度的字段总是被分配到一起。在满足这个前提条件的情况下，在父类中定义的变量会出现在子类之前。如果 CompactFields 参数值为 true（默认为 true），那么子类之中较窄的变量也可能会插入到父类变量的空隙之中。
+
+​		第三部分对齐填充并不是必然存在的，也没有特别的含义，它仅仅起着占位符的作用。由于 HotSpot VM 的自动内存管理系统要求对象起始地址必须是 8 字节的倍数（1 倍或者 2 倍），因此，当对象实例数据部分没有对齐时，就需要通过对齐填充来补全。		
+
+
 
 
 
