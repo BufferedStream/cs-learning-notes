@@ -10,7 +10,9 @@
 
 ​		Java 虚拟机在执行 Java 程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自的用途，以及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。根据《Java 虚拟机规范（Java SE 7版）》的规定， Java 虚拟机所管理的内存将会包括以下几个运行时数据区域，如下图所示。
 
-![Java 内存区域与内存溢出异常-图1](E:\lProgram Files\github\cs-learning-notes\notes\images\Java 内存区域与内存溢出异常-图1.png)
+
+
+![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图1.png)
 
 ​		
 
@@ -187,7 +189,9 @@ if（!constants-＞tag_at（index）.is_unresolved_klass()）{
 
 ​		HotSpot 虚拟机对象头 Mark Word：
 
-![1568645444938](C:\Users\26450\AppData\Roaming\Typora\typora-user-images\1568645444938.png)
+
+
+![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图2.png)
 
 
 
@@ -224,11 +228,17 @@ if（!constants-＞tag_at（index）.is_unresolved_klass()）{
 
 ​		如果使用句柄访问的话，那么 Java 堆中将会划分出一块内存来作为句柄池， reference 中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息，如下图所示。
 
-![1568731733006](C:\Users\26450\AppData\Roaming\Typora\typora-user-images\1568731733006.png)
+
+
+![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图3.png)
 
 ​		如果使用直接指针访问，那么 Java 堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，而 reference 中存储的直接就是对象地址，如下图所示。
 
-![1568733676216](C:\Users\26450\AppData\Roaming\Typora\typora-user-images\1568733676216.png)
+
+
+![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图4.png)
+
+​		
 
 ​		这两种对象访问方式各有优势，使用句柄来访问的最大好处就是 reference 中存储的是稳定的句柄地址，在对象被移动（垃圾收集时移动对象时非常普遍的行为）时只会改变句柄中的实例数据指针，而 reference 本身不需要修改。
 
