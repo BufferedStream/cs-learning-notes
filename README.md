@@ -57,3 +57,8 @@
 ## Java 虚拟机
 - [JIT 与 HotSpot](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JIT%20%E4%B8%8E%20HotSpot.md)
 - [Java 内存区域与内存溢出异常](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8.md)
+
+## Linux
+- [Linux 快捷键与基本指令](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Linux%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4.md)
+- [Linux 文件系统](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Linux%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.md)
+- [Linux 查看文件的常用命令](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Linux%20%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
