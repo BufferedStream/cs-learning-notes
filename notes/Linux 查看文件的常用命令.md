@@ -44,13 +44,15 @@
 
 **2.命令功能：**
 
-​	cat 主要有三大功能：
-
 ​		1.一次显示整个文件：cat	filename		
 
 ​		2.从键盘创建一个文件：cat	>	filename	只能创建新文件，不能编辑已有文件
 
 ​		3.将几个文件合并为一个文件：cat	file1	file2	>	file
+
+​		4.将一个文件内容追加到另一个文件后面：cat file1 >> file2，cat file1 > file2 是重定向的意思，会覆盖原先的内容
+
+​		5.快速清空一个文件：cat /dev/null > file1
 
 
 
