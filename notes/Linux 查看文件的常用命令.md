@@ -16,7 +16,7 @@
 
   
 
-#### 文本
+### 文本
 
 什么是文本，在计算机中，有许多方法可以表达信息。所有的方法都涉及到，在信息与一些数字之间确立一种关系，而这些数字可以用来代表信息。毕竟，计算机只能理解数字，这样所有的数据都被转换成数指来表示。
 
@@ -30,7 +30,7 @@
 
 
 
-#### cat 命令
+### cat 命令
 
 **cat命令**连接文件或标准输入并打印到标准输出设备上。这个命令常用来显示文件内容，或者将几个文件连接起来显示，或者从标准输入读取内容并显示，它常与重定向符号配合使用。
 
@@ -38,7 +38,7 @@
 
 **1.命令格式：**
 
-​	cat [OPTION]...  [FILE]... 
+​	cat [OPTION]... [FILE]...
 
 
 
@@ -46,4 +46,50 @@
 
 ​	cat 主要有三大功能：
 
-​		1.一次显示整个文件：cat filename		
+​		1.一次显示整个文件：cat	filename		
+
+​		2.从键盘创建一个文件：cat	>	filename	只能创建新文件，不能编辑已有文件
+
+​		3.将几个文件合并为一个文件：cat	file1	file2	>	file
+
+
+
+**3.命令参数：**
+
+	   -A, --show-all
+	          equivalent to -vET
+	
+	   -b, --number-nonblank
+	          number nonempty output lines, overrides -n
+	          与 -n 类似，只不过对于空白行不编号
+	
+	   -e     equivalent to -vE
+	
+	   -E, --show-ends
+	          display $ at end of each line
+	          在每行结束处显示 $
+	
+	   -n, --number
+	          number all output lines
+	          由 1 开始对所有输出的行数编号
+	
+	   -s, --squeeze-blank
+	          suppress repeated empty output lines
+	          当遇到有连续两行以上的空白行，就代换为一行的空白行
+	
+	   -t     equivalent to -vT
+	
+	   -T, --show-tabs
+	          display TAB characters as ^I
+	          将跳格字符显示为 ^I
+	
+	   -u     (ignored)，找不着
+	
+	   -v, --show-nonprinting
+	          use ^ and M- notation, except for LFD and TAB
+	          使用 ^ 和 M- 引用，除了 LFD 和 TAB 之外 
+	
+	   --help display this help and exit
+	
+	   --version
+	          output version information and exit
