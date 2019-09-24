@@ -1,6 +1,6 @@
 ## Linux 快捷键与基本指令
 
-- Tab：命令和文件名补全
+- **Tab**：命令和文件名补全
 
 - `Ctrl + C`：该键是 Linux 下面默认的中断键（Interrupt Key），当键入`Ctrl + C`时，系统会发送一个中断信号给正在运行的程序和 shell。具体的响应结果会根据程序的不同而不同。一些程序在收到这个信号后，会立即结束并退出程序，一些程序可能会忽略这个中断信号，还有一些程序在接受到这个信号后，会采取一些其他的动作（Action）。当shell接受到这个中断信号的时候，它会返回到提示界面，并等待下一个命令。
 
@@ -8,7 +8,7 @@
 
 - `Ctrl + D`：该键是 Linux 下面标准输入输出的`EOF`。在使用标准输入输出的设备中，遇到该符号，会认为读到了文件的末尾，因此结束输入或输出。。
 
-- help：用于显示 shell 内部命令的帮助信息。 help 命令只能显示 shell 内部的命令帮助信息。而对于外部命令的帮助信息只能使用 man 或 info 命令查看。
+- **help**：用于显示 shell 内部命令的帮助信息。 help 命令只能显示 shell 内部的命令帮助信息。而对于外部命令的帮助信息只能使用 man 或 info 命令查看。
 
   
 
@@ -34,7 +34,7 @@ Linux命令有内部命令（内建命令）和外部命令之分，内部命令
 
 
 
-- man： man 是 manual 的缩写，将指令的具体信息显示出来。当执行 man date 时，有 DATE(1) 出现，其中的数字代表指令的类型，常用的数字及其类型如下：
+- **man**： man 是 manual 的缩写，将指令的具体信息显示出来。当执行 man date 时，有 DATE(1) 出现，其中的数字代表指令的类型，常用的数字及其类型如下：
 
   | 代号 | 类型                                            |
   | :--: | ----------------------------------------------- |
@@ -44,7 +44,101 @@ Linux命令有内部命令（内建命令）和外部命令之分，内部命令
 
 
 
-- info： info 与 man 类似，但是 info 将文档分成一个个页面，每个页面可以进行跳转。
-- ip addr show：显示 ip 信息
-- file filename：打印出文件内容的简单描述
-- 
+- **info**： info 与 man 类似，但是 info 将文档分成一个个页面，每个页面可以进行跳转。
+
+- **ip addr show**：显示 ip 信息
+
+- **uname**：
+
+  用法：uname [选项]...
+  输出一组系统信息。如果不跟随选项，则视为只附加 -s 选项。
+
+    -a, --all                     以如下次序输出所有信息。其中若-p 和 -i 的探测结果不可知则被省略：
+    -s, --kernel-name             输出内核名称
+    -n, --nodename                输出网络节点上的主机名
+    -r, --kernel-release          输出内核发行号
+    -v, --kernel-version          输出内核版本
+    -m, --machine         输出主机的硬件架构名称
+    -p, --processor               输出处理器类型或"unknown"
+    -i, --hardware-platform       输出硬件平台或"unknown"
+    -o, --operating-system        输出操作系统名称
+        --help            显示此帮助信息并退出
+        --version         显示版本信息并退出
+
+
+
+- **lsb_release**：lsb_release 命令用来查看当前系统的发行版信息（prints certain LSB (Linux Standard Base) and Distribution information.）。有了这个命令就可以清楚的知道到底是 RedHat 的、还是别的发行版，还有具体的版本号，比如 3.4 还是 5.4 等等。有些系统上不一定安装了这个命令，可以通过查看 /etc/issue 文件得到发行版信息。**也可以通过 cat /etc/issue 查看系统版本信息。**
+
+  -v, --version
+
+  ​          Display the version of the LSB specification against which the distribution is compliant.
+
+  ​		  显示版本信息。
+
+     -i, --id
+
+  ​          Display the string id of the distributor.
+
+  ​		  显示发行版的id。
+
+     -d, --description
+
+  ​          Display the single line text description of the distribution.
+
+  ​		  显示该发行版的描述信息。
+
+     -r, --release
+
+  ​          Display the release number of the distribution.
+
+  ​		  显示当前系统发行版的具体版本号。
+
+     -c, --codename
+
+  ​          Display the codename according to the distribution release.
+
+  ​		  发行版代号。
+
+     -a, --all
+
+  ​          Display all of the above information.
+
+     -s, --short
+
+  ​          Use short output format for information requested by other options (or version if none).
+
+     -h, --help
+
+  ​          Display this message.
+
+
+
+- **File**：
+
+  描述：
+
+  file 测试每个参数以尝试对其进行分类。按顺序执行三组测试：文件系统测试、魔数测试、语言测试。第一个成功的测试会打印文件类型。
+
+  打印的类型通常包含以下的某个单词：
+
+  - text（文本，文件仅包含打印字符和一些常用控制字符，并且可以在 ascii 终端上安全读取）；
+
+  - executable（文件包含以某种Unix内核或其他内核可以理解的形式编译程序的结果）；
+
+  - data 意味着其他任何东西（数据通常是 “二进制” 或不可打印的）。例外是已知包含二进制数据的众所周知的文件格式（核心文件，tar 档案）。
+
+    
+
+  修改魔术文件或程序本身时，请确保保留这些关键字。用户必须看到目录中的所有可读文件都有
+
+   “text” 标识。不要像伯克利那样做，把 “shell commands test” 改成 “shell script”。
+
+  **文件系统测试**：基于检查 stat(2) 系统调用的返回。程序检查文件是否为空，或者它是否是某种特殊文件。如果在系统头文件 <sys/stat.h> 中定义了文件类型，则凭直觉判断适合于当前运行的系统的任何已知文件类型（在那些实现套接字、符号链接、命名管道（FIFO）的系统上）。
+
+  **魔数测试**：用于检查具有特定固定格式的数据的文件。这个规范的例子是二进制可执行文件（编译程序）a.out文件，其格式在标准include目录中的<elf.h>，<a.out.h>、<exec.h>中定义。这些文件有一个“魔数”存储在文件开头附近的特定位置，用于告诉UNIX操作系统该文件是二进制可执行文件，以及其中的几种类型。“魔数”的概念已通过扩展应用于数据文件。在文件的小固定偏移处具有一些不变标识符，可以用这种方式来描述任何文件。标识这些文件的信息从/etc/magic和编译的魔术文件/usr/share/misc/magic.mgc中获取，或如果编译的文件不存在，则从目录/usr/share/misc/magic中的文件中读取。此外，如果存在$HOME/.magic.mgc或$HOME/.magic，它将优先于系统魔术文件使用。
+
+  **语言测试**：如果文件与魔术文件中的任何条目都不匹配，则会检查它是否看起来像是文本文件。通过构成每个集合中的可打印文本的不同范围和字节序列，以此来区分ASCII，ISO-8859-x，非ISO 8位扩展ASCII字符集（例如Macintosh和IBM PC系统上使用的字符集），UTF-8编码的Unicode，UTF-16编码的Unicode，EBCDIC字符集。如果文件通过任何这些测试，则报告其字符集。ASCII，ISO-8859-x，UTF-8，扩展ASCII文件被标识为“text”，因为它们几乎可以在任何终端上读取；UTF-16和EBCDIC只是“character data”，因为虽然它们包含文本，但是它的文本在可以读取之前需要翻译。此外，file将尝试确定文本类型文件的其他特征。如果文件的行由CR，CRLF，NEL终止，而不是Unix标准的LF，则会进行报告。还将识别包含嵌入式转义序列或加粗的文件。
+
+  一旦文件确定了文本类型文件中使用的字符集，它将尝试确定文件以何种语言编写。语言测试查找特定字符串（参见<names.h>），它们可以出现在文件的前几个块中的任何位置。例如，关键字.br表示该文件很可能是troff(1)输入文件，就像关键字struct表示C程序一样。这些测试不如前两组可靠，因此它们最后执行。语言测试例程还测试一些杂项（例如tar(1)档案）。
+
+  任何无法识别为已经使用上面列出的任何字符集编写的文件都被简单地称为“data”。
