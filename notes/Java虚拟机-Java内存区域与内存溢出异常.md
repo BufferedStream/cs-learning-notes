@@ -190,7 +190,7 @@ if（!constants-＞tag_at（index）.is_unresolved_klass()）{
 
 
 
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图2.png)
+![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE2.png
 
 
 
@@ -229,13 +229,13 @@ if（!constants-＞tag_at（index）.is_unresolved_klass()）{
 
 
 
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图3.png)
+![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE3.png)
 
 ​		如果使用直接指针访问，那么 Java 堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，而 reference 中存储的直接就是对象地址，如下图所示。
 
 
 
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图4.png)
+![Aaron Swartz](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE4.png)
 
 ​		
 
