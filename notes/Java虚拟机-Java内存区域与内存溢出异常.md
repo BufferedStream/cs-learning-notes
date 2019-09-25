@@ -13,7 +13,6 @@
 
 
 ![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java 内存区域与内存溢出异常-图1.png)
-
 ​		
 
 ##### 2.1  程序计数器
