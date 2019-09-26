@@ -55,8 +55,8 @@
 
 
 ## Java 虚拟机
-- [JIT 与 HotSpot](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/JIT%20%E4%B8%8E%20HotSpot.md)
-- [Java 内存区域与内存溢出异常](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8.md)
+- [JIT 与 HotSpot](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20虚拟机%20-%20JIT%20与%20HotSpot.md)
+- [Java 内存区域与内存溢出异常](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Java%20%E8%99%9A%E6%8B%9F%E6%9C%BA%20-%20Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8.md)
 
 ## Linux
 - [Linux 快捷键与基本指令](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/Linux%20%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4.md)
@@ -66,3 +66,4 @@
 ## 计算机网络
 - [计算机网络体系结构](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.md)
 - [计算机网络 - 网络层](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%20-%20%E7%BD%91%E7%BB%9C%E5%B1%82.md)
+
