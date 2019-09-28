@@ -10,13 +10,11 @@
 
 - **help**：用于显示 shell 内部命令的帮助信息。 help 命令只能显示 shell 内部的命令帮助信息。而对于外部命令的帮助信息只能使用 man 或 info 命令查看。
 
-  
-
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A41.png)
+  <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A41.png"/> </div><br>
 
 
 
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux快捷键与常用指令2.png)
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux快捷键与常用指令2.png"/> </div><br>
 
 
 
@@ -28,9 +26,7 @@ Linux 命令有内部命令（内建命令）和外部命令之分，内部命�
 
 可以通过 type 命令分辨内部命令和外部命令：
 
-
-
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A43.png)
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A43.png"/> </div><br>
 
 
 
