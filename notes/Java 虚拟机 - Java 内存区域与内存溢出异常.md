@@ -10,10 +10,7 @@
 
 ​		Java 虚拟机在执行 Java 程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自的用途，以及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。根据《Java 虚拟机规范（Java SE 7版）》的规定， Java 虚拟机所管理的内存将会包括以下几个运行时数据区域，如下图所示。
 
-
-
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE1.png)
-​		
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE1.png"/> </div><br>		
 
 ##### 2.1  程序计数器
 
@@ -85,9 +82,7 @@
 
 ​		在 JDK 1.4 中新加入了 NIO（New Input/Output）类，引入了一种基于通道（Channel）与缓冲区（Buffer）的 I/O 方式，它可以使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆中来回复制数据。
 
-​		显然，本机直接内存的分配不会受到 Java 堆大小的限制，但是，既然是内存，肯定还是会受到本机总内存（包括 RAM 以及 SWAP 区或者分页文件）大小以及处理器寻址空间的限制。服务器管理员在配置虚拟机参数时，会根据实际内存设置 -Xmx 等参数信息，但经常忽略直接内存，使得各个内存区域总和大于物理内存限制（包括物理的和操作系统级的限制）
-
-，从而导致动态扩展时出现 OutOfMemoryError 异常。
+​		显然，本机直接内存的分配不会受到 Java 堆大小的限制，但是，既然是内存，肯定还是会受到本机总内存（包括 RAM 以及 SWAP 区或者分页文件）大小以及处理器寻址空间的限制。服务器管理员在配置虚拟机参数时，会根据实际内存设置 -Xmx 等参数信息，但经常忽略直接内存，使得各个内存区域总和大于物理内存限制（包括物理的和操作系统级的限制），从而导致动态扩展时出现 OutOfMemoryError 异常。
 
 ​		
 
@@ -188,11 +183,7 @@ if（!constants-＞tag_at（index）.is_unresolved_klass()）{
 
 ​		HotSpot 虚拟机对象头 Mark Word：
 
-
-
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE2.png)
-
-
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE2.png"/> </div><br>		
 
 ​		对象头的另外一部分是类型指针，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。并不是所有的虚拟机实现都必须在对象数据中保留类型指针，换句话说，查找对象的元数据信息并不一定要经过对象本身，另外，如果对象是一个 Java 数组，那在对象头中还必须有一块用于记录数据长度的数据，因为虚拟机可以通过普通 Java 对象的元数据信息确定 Java 对象的大小，但是从数组的元数据中却无法确定数组的大小。
 
@@ -227,17 +218,11 @@ if（!constants-＞tag_at（index）.is_unresolved_klass()）{
 
 ​		如果使用句柄访问的话，那么 Java 堆中将会划分出一块内存来作为句柄池， reference 中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息，如下图所示。
 
-
-
-![Aaron Swartz](https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE3.png)
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE3.png"/> </div><br>	
 
 ​		如果使用直接指针访问，那么 Java 堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，而 reference 中存储的直接就是对象地址，如下图所示。
 
-
-
-![Aaron Swartz](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE4.png)
-
-​		
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Java%20%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-%E5%9B%BE4.png"/> </div><br>
 
 ​		这两种对象访问方式各有优势，使用句柄来访问的最大好处就是 reference 中存储的是稳定的句柄地址，在对象被移动（垃圾收集时移动对象时非常普遍的行为）时只会改变句柄中的实例数据指针，而 reference 本身不需要修改。
 
