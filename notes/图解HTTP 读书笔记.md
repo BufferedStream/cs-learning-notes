@@ -2,7 +2,7 @@
 
 #### 第 1 章	了解 Web 及网络基础
 
-<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E7%BD%91%E7%BB%9C%E5%B1%82%20-%20%E5%9B%BE2.png"/> </div><br>
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE1.jpg"/> </div><br>
 
 URI 是 Uniform Resource Identifier 的缩写，表示统一资源标识符。URI 用字符串标识某一互联网资源，而 URL 表示资源的地点（互联网上所处的位置）。可见 URL 是 URI 的子集。
 
