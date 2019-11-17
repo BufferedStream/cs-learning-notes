@@ -16,7 +16,6 @@
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux快捷键与常用指令2.png"/> </div><br>
 
-
 Linux 命令有内部命令（内建命令）和外部命令之分，内部命令和外部命令功能基本相同，但也有些细微差别。
 
 内部命令实际上是 shell 程序的一部分，其中包含的是一些比较简单的 Linux 系统命令，这些命令由 shell 程序识别并在 shell 程序内部完成运行，通常在 Linux 系统加载运行时 shell 就被加载并驻留在系统内存中。内部命令是写在 bash 源码里面的，其执行速度比外部命令快，因为解析内部命令 shell 不需要创建子进程。比如：`exit，history，cd，echo`等。
@@ -26,7 +25,6 @@ Linux 命令有内部命令（内建命令）和外部命令之分，内部命�
 可以通过 type 命令分辨内部命令和外部命令：
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/linux%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A43.png"/> </div><br>
-
 
 - **man**： man 是 manual 的缩写，将指令的具体信息显示出来。当执行 man date 时，有 DATE(1) 出现，其中的数字代表指令的类型，常用的数字及其类型如下：
 
