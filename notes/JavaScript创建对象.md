@@ -210,6 +210,7 @@ Person.prototype = {
 };
 ```
 
+
 &emsp;&emsp;在上面的代码中，我们将`Person.prototype`设置为等于一个以对象字面量形式创建的新对象。最终结果相同，但有一个例外：constructor属性不再指向Person了。前面曾经介绍过，每创建一个函数，就会同时创建它的prototype对象，这个对象也会自动获得constructor属性。而我们在这里使用的语法，本质上完全重写了默认的prototype对象，因此constructor属性也就变成了新对象的constructor属性（指向Object构造函数），不再指向Person函数。此时，尽管	`instanceof`操作符还能返回正确的结果，但通过constructor已经无法确定对象的类型了，如下所示。
 
 ```js
@@ -242,7 +243,7 @@ Person.prototype = {
 
 ##### 3.原型的动态性
 
-&emsp;&emsp;由于在原型中查找值得过程是一次搜索，因此我们对原型对象所做的任何修改都能够立即从实例上反映出来——即使是先创建了实例后修改原型也照样如此。如下例。
+&emsp;&emsp;由于在原型中查找值的过程是一次搜索，因此我们对原型对象所做的任何修改都能够立即从实例上反映出来——即使是先创建了实例后修改原型也照样如此。如下例。
 
 ```js
 var friend = new Person();
