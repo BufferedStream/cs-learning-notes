@@ -173,7 +173,9 @@ Person1._proto_ == Person.prototype;	//true
 
 &emsp;&emsp;如下图所示，展现了各个对象之间的关系。
 
-![image1](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A11.jpg)
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/js创建对象1.jpg"/>
+</div>
 		
 
 

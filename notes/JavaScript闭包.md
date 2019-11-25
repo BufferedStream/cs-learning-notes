@@ -46,9 +46,8 @@ var result = compare(5, 10);
 
 &emsp;&emsp;以上代码先定义了 compare() 函数，然后又在全局作用域中调用了它。当第一次调用 compare() 时，会创建一个包含 this、arguments、value1 和 value2 的活动对象。全局执行环境的变量对象（包含 this、 result 和 compare）在compare() 执行环境的作用域链中则处于第二位。下图展示了包含上述关系的 compare() 函数执行时的作用域链。
 
-
 <div align=center>
-	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%851.jpg"/>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/js%E9%97%AD%E5%8C%851.jpg"/>
 </div>
 
 
@@ -58,9 +57,8 @@ var result = compare(5, 10);
 
 &emsp;&emsp;在另一个函数内部定义的函数会将包含函数（即外部函数）的活动对象添加到它的作用域链中。因此，在 createComparisionFunction() 函数内部定义的匿名函数的作用域链中，实际上将会包含外部函数 createComparisionFunction() 的活动对象。下图展示了当下列代码执行时，包含函数与内部匿名函数的作用域链。
 
-
 <div align=center>
-	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%852.jpg"/>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/js%E9%97%AD%E5%8C%852.jpg"/>
 </div>
 
 
@@ -69,9 +67,8 @@ var compare = createComparisonFunction("name");
 var result = compare({name: "zhangsan"}, {name: "lisi"});
 ```
 
-
 <div align=center>
-	<img src="https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E9%97%AD%E5%8C%853.jpg"/>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/js%E9%97%AD%E5%8C%853.jpg"/>
 </div>
 
 

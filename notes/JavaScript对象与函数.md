@@ -26,7 +26,9 @@ Object的每个实例都具有下列属性和方法。
 
   
 
-![image1](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/images/js%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B01.png)
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/js%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B01.png"/>
+</div>
 
 ```javascript
 function person(){};
