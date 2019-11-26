@@ -929,7 +929,7 @@ Google 在 2010 年发布了 SPDY（取自 SPeeDY，发音同 speedy），其开
 
 - 可任意选择数据压缩格式。非强制压缩发送。
 
-  
+  <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE2.jpg"/> </div><br>
 
 
 
@@ -943,7 +943,7 @@ Ajax 的核心技术是名为 XMLHttpRequest 的 API，通过 JavaScript 脚本�
 
 而利用 Ajax 实时地从服务器获取内容，有可能会导致大量请求产生。另外，Ajax 仍未解决 HTTP 协议本身存在的问题。
 
-
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE3.jpg "/> </div><br>
 
 
 
@@ -957,7 +957,7 @@ Ajax 的核心技术是名为 XMLHttpRequest 的 API，通过 JavaScript 脚本�
 
 内容上虽然可以做到实时更新，但为了保留响应，一次连接的持续时间也变长了。期间，为了维持连接会消耗更多的资源。另外，Comet 也仍未解决 HTTP 协议本身存在的问题。
 
-
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE4.jpg "/> </div><br>
 
 
 
@@ -979,7 +979,7 @@ SPDY 没有完全改写 HTTP 协议，而是在 TCP/IP 的应用层与运输层�
 
 SPDY 以会话层的形式加入，控制对数据的流动，但还是采用 HTTP 建立通信连接。因此，可照常使用 HTTP 的 GET 和 POST 等方 法、Cookie 以及 HTTP 报文等。
 
-
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE5.jpg"/> </div><br>
 
 
 
@@ -1099,6 +1099,8 @@ WebSocket，即 Web 浏览器与 Web 服务器之间全双工通信标准。其�
 
   成功握手确立 WebSocket 连接之后，通信时不再使用 HTTP 的数据帧，而采用 WebSocket 独立的数据帧。
 
+  <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE6.jpg"/> </div><br>
+
 
 
 - **WebSocket API**
@@ -1145,7 +1147,5 @@ HTTP/2.0 的 7 项技术及讨论
 
 HTTP/2.0 围绕着主要的 7 项技术进行讨论，现阶段（2012 年 8 月 13 日），大都倾向于采用以下协议的技术。但是，讨论仍在持续，所以不能排除会发生重大改变的可能性。
 
-
-
-
+<div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE7.jpg"/> </div><br>
 
