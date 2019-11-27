@@ -948,7 +948,6 @@ Ajax 的核心技术是名为 XMLHttpRequest 的 API，通过 JavaScript 脚本�
 
 
 
-
 **Comet** 的解决方法
 
 一旦服务器端有内容更新了，Comet 不会让请求等待，而是直接给客户端返回响应。这是一种通过延迟应答，模拟实现服务器端向客户端推送（Server Push）的功能。
@@ -958,7 +957,6 @@ Ajax 的核心技术是名为 XMLHttpRequest 的 API，通过 JavaScript 脚本�
 内容上虽然可以做到实时更新，但为了保留响应，一次连接的持续时间也变长了。期间，为了维持连接会消耗更多的资源。另外，Comet 也仍未解决 HTTP 协议本身存在的问题。
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE4.jpg "/> </div><br>
-
 
 
 
@@ -980,7 +978,6 @@ SPDY 没有完全改写 HTTP 协议，而是在 TCP/IP 的应用层与运输层�
 SPDY 以会话层的形式加入，控制对数据的流动，但还是采用 HTTP 建立通信连接。因此，可照常使用 HTTP 的 GET 和 POST 等方 法、Cookie 以及 HTTP 报文等。
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE5.jpg"/> </div><br>
-
 
 
 
@@ -1148,4 +1145,3 @@ HTTP/2.0 的 7 项技术及讨论
 HTTP/2.0 围绕着主要的 7 项技术进行讨论，现阶段（2012 年 8 月 13 日），大都倾向于采用以下协议的技术。但是，讨论仍在持续，所以不能排除会发生重大改变的可能性。
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE7.jpg"/> </div><br>
-
