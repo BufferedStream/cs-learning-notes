@@ -478,11 +478,13 @@ getline 函数把字符 '\0'（即空字符，其值为 0）插入到它创建�
 
 的字符串常量时，它将以字符数组的形式存储，数组的个元素分别存储字符串的各个字符，并以 '\0' 标志字符串的结束。
 
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C程序设计语言 - 图1.jpg"/>
+</div>
+
+printf 函数中的格式 %s 规定，对应的参数必须是以这种形式表示的字符串。copy 函数的实现正是依赖于输入参数由 '\0' 结束这一事实，它将 '\0' 拷贝到输出参数中。（也就是说，空字符 '\0' 不是普通文本的一部分。）
 
 
-
-
-printf 函数中的格式 %s 规定，对应的参数必须是以这种形式表示的字符串。
 
 
 
@@ -1826,6 +1828,138 @@ void writelines(char *lineptr[], int nlines)
 
 
 
+有关函数 getline 的详细信息参见 1.9 节。
+
+在该例子中，指针数组 lineptr 的声明是新出现的重要概念：
+
+char *lineptr[MAXLINES];
+
+它表示 lineptr 是一个具有 MAXLINES 个元素的一维数组，其中数组的每个元素是一个指向字符类型对象的指针。也就是说，lineptr[i] 是要给字符指针，而 *lineptr[i] 是该指针指向的第 i 个文本行的首字符。
+
+由于 lineptr 本身是一个数组名，因此，可按照前面例子中相同的方法将其作为指针使用，这样，writelines 函数可以改写为：
+
+//writelines函数：写输出行
+
+void writelines(char *lineptr[], int nlines)
+
+{
+
+​	while (nlines-- > 0) {
+
+​		printf("%s\n", *lineptr++);
+
+​	}
+
+}
+
+（注意这里的数组变量 lineptr 可以改变值）
+
+循环开始执行时，*lineptr 指向第一行，每执行依次自增运算都使得 lineptr 指向下一行，同时对 nlines 进行自减运算。
+
+在明确了输入和输出函数的实现方法之后，下面便可以着手考虑文本行得排序问题了。在这里需要对第 4 章得快速排序函数做一些小改动：首先，需要修改该函数得声明部分；其次，需要调用 strcmp 函数完成文本行得比较运算。但排序算法在这里仍然有效，不需要做任何改动。
+
+```c
+//qsort 函数：以递增顺序对 v[left]...v[right] 进行排序
+void qsort(char *v[], int left, int right)
+{
+    int i, last;
+    void swap(char *v[], int i, int j);
+    if (left >= right) {	//若数组包含的元素数少于两个，则不执行任何操作	
+        return;
+    }
+    //将划分子集的元素；整数除法会截断结果中的小数部分
+    swap (v, left, (left + right)/2);	
+    last = left;	//移动到 v[0]
+    for (i = left + 1; i <= right; i++) {	//划分子集
+        if (stccmp(v[i], v[left]) < 0) {
+            swap(v, ++last, i);
+        }
+    }
+    swap(v, left, last);	//恢复划分子集的元素
+    qsort(v, left, last-1);
+    qsort(v, last+1, right);
+}
+
+//这里之所以将数组元素交换操作放在一个单独的函数 swap 中，是因为它在 qsort 函数中要使用 3 次。
+
+//同样，swap 函数也只需要做一些很小的改动：
+void swap(char *v[], int i, int j)
+{
+    char *temp;
+        
+    temp = v[i];
+    v[i] = v[j];
+    v[j] = temp;
+}
+```
+
+
+
+因为 v（别名为 lineptr）的所有元素都是字符指针，并且 temp 也必须是字符指针，因此 temp 与 v 的任意元素之间可以互相复制。
+
+
+
+
+
+#### 5.7	多维数组
+
+略
+
+
+
+
+
+#### 5.8	指针数组的初始化
+
+考虑这样一个问题：编写一个函数 month_name(n)，它返回一个指向第 n 个月名字的字符串的指针。这是内部 static 类型数组的一种理想的应用。month_name 函数中包含一个私有的字符串数组，当它被调用时，返回一个指向正确元素的指针。本节将说明如何初始化该名字数组。
+
+指针数组的初始化语法和前面所讲的其它类型对象的初始化语法类似：
+
+```c
+//month_name函数：返回第 n 个月份的名字
+char *month_name(int n)
+{
+    static char *name[] = {
+        "Illegal month",
+        "January", "February", "March",
+        "April", "May", "June",
+        "July", "August", "September",
+        "October", "November", "December"
+    };
+    
+    return (n < 1 || n > 12) ? name[0] : name[n];
+}
+```
+
+
+
+其中，name 的声明与排序例子中 lineptr 的声明相同，是一个一维数组，数组的元素为字符指针。name 数组的初始化通过一个字符串列表实现，列表中的每个字符串赋值给数组相应位置的元素。第 i 个字符串的所有字符存储在存储器中的某个位置，指向它的指针存储在 name[i] 中。由于上述声明中没有指明 name 的长度，因此，编译器编译时将对初值个数进行统计，并将这一准确数字填入数组的长度。
+
+
+
+
+
+#### 5.9	指针与多维数组
+
+略
+
+
+
+
+
+#### 5.10	命令行参数
+
+在支持 C 语言的环境中，可以在程序开始执行时将命令行参数传递给程序。调用主函数 main 时，它带有两个参数。第一个参数（习惯上称为 argc，用于参数计数）的值表示运行程序时命令行中参数的数目；第二个参数（称为 argv，用于参数向量）是要给指向字符串数组的指针，其中每个字符串对应一个参数。我们通常用多级指针处理这些字符串。
+
+最简单的例子时程序 echo，它将命令行参数回显在屏幕上的一行中，其中命令行中各参数之间用空格隔开。也就是说，命令
+
+echo hello, world
+
+将打印下列输出：
+
+hello, world
+
+按照 C 语言的约定，argv[0] 的值是启动该程序的程序名，因此 argc 的值至少为 1。如果 argc 的 值为 1，则说明程序名后面没有命令行参数。在上面的例子中，argc 的值为 3，argv[0]、argv[1]  和 argv[2] 的值分别为  "echo"、"hello,"，以及 "world"。第一个可选参数为 argv[1]，而最后一个可选参数为 argv[argc-1]。另外，ANSI 标准要求 argv[argc] 的值必须为一空指针（参见图 5-11）。
 
 
 
@@ -1833,40 +1967,7 @@ void writelines(char *lineptr[], int nlines)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+程序 echo 的第一个版本将 argv 看成是一个字符指针数组：
 
 
 
