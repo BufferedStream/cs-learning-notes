@@ -937,7 +937,9 @@ double val[MAXVAL];
 
 此外，还必须考虑定义和声明在这些文件之间的共享问题。我们尽可能把共享的部分集中在一起，这样就只需要一个副本，改进程序时也容易保证程序的正确性。我们把这些公共部分放在头文件 calc.h 中，在需要使用该头文件时通过 #include 指令将它包含进来（#include 指令将在 4.11 节中介绍）。这样分割后，程序的形式如下所示：
 
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE2.jpg"/>
+</div>
 
 
 
@@ -1315,9 +1317,9 @@ ANSI C 的一个最重要的变化是，它明确地制定了操作指针的规�
 
 首先，我们通过一个简单的示意图来说明内存是如何组织的。通常的机器都有一系列连续编号或编址的存储单元，这些存储单元可以单个进行操纵，也可以连续成组的方式操纵。通常情况下，机器的一个字节可以存放一个 char 类型的数据，两个相邻的字节存储单元可存储一个 short（短整型）类型的数据，而 4 个相邻的字节存储单元可存储一个 long（长整型）类型的数据。指针是能够存放一个地址的一组存储单元（通常是两个或 4 个字节）。因此，如果 c 的类型是 char，并且 p 是指向 c 的指针，则可用图 5-1 表示它们之间的关系：
 
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE3.jpg"/>
+</div>
 
 一元运算符 & 可用于取一个对象的地址，因此，下列语句：
 
@@ -1443,11 +1445,9 @@ int a[10];
 
 定义了一个长度为 10 的数组 a。换句话说，它定义了一个由 10 个对象组成的集合，这 10 个对象存储在相邻的内存区域中，名字分别为 a[0]、a[1]、... 、a[9]（参见图 5-3）。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE4.jpg"/>
+</div>
 
 a[i] 表示该数组的第 i 个元素。如果 pa 的声明为
 
@@ -1673,9 +1673,9 @@ char *pmessage = "nw is the time";	//定义一个指针
 
 上述声明中，amessage 是一个仅仅足以存放初始化字符串以及空字符 '\0' 的的一维数组。数组中的单个字符可以进行修改，但 amessage 始终指向同一个存储位置。另一方面，pmessage 是一个指针，其初值指向一个字符串常量，之后它可以被修改以指向其它地址，但如果试图修改字符串的内容，结果是没有定义的（参见图 5-7）。
 
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE5.jpg"/>
+</div>
 
 为了更进一步地讨论指针和数组其它方面地问题，下面以标准库中两个有用的函数为例来研究它们的不同实现版本。第一个函数 strcpy(s, t) 把指针 t 指向的字符串复制到指针 s 指向的位置。如果使用语句 s=t 实现该功能，其实质上只是拷贝了指针，而并没有复制字符。为了进行字符的复制，这里使用了一个循环语句。strcpy 函数的第 1 个版本是通过数组方法实现的，如下所示：
 
@@ -1808,11 +1808,9 @@ val = *--p;		//将栈顶元素弹出到 val 中
 
 我们引入指针数组处理这种问题。如果待排序的文本行首尾相连地存储在一个长字符数组中，那么每个文本行可通过指向它的第一个字符的指针来访问。这些指针本身可以存储在一个数组中。这样，将指向两个文本行的指针传递给函数 strcmp 就可实现对这两个文本行的比较。当交换次序颠倒的两个文本行时，实际上交换的是指针数组中可与这两个文本行相对应的指针，而不是这两个文本行本身（参见图 5-8）。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE6.jpg"/>
+</div>
 
 这种实现方法消除了因移动文本行本身所带来的复杂的存储管理和巨大的开销这两个孪生问题。
 
@@ -2025,11 +2023,9 @@ hello, world
 
 按照 C 语言的约定，argv[0] 的值是启动该程序的程序名，因此 argc 的值至少为 1。如果 argc 的 值为 1，则说明程序名后面没有命令行参数。在上面的例子中，argc 的值为 3，argv[0]、argv[1]  和 argv[2] 的值分别为  "echo"、"hello,"，以及 "world"。第一个可选参数为 argv[1]，而最后一个可选参数为 argv[argc-1]。另外，ANSI 标准要求 argv[argc] 的值必须为一空指针（参见图 5-11）。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE7.jpg"/>
+</div>
 
 程序 echo 的第一个版本将 argv 看成是一个字符指针数组：
 
@@ -2183,51 +2179,155 @@ main(int argc, char *argv[])
 
 #### 5.11	指向函数的指针
 
-在 C 语言中，
+在 C 语言中，函数本身不是变量，但可以定义指向函数的指针。这种类型的指针可以被赋值、存放在数组中、传递给函数以及作为函数的返回值等等。为了说明指向函数的指针的用法，我们接下来将修改本章前面的排序函数，在给定可选参数 -n 的情况下，该函数将按数值大小而非字典顺序对输入行进行排序。
+
+排序程序通常包括 3 部分：判断任何两个对象之间次序的比较操作、颠倒对象次序的交换操作、一个用于比较和交换对象直到所有对象都按正确次序排序的排序算法。由于排序算法与比较、交换操作无关，因此，通过在排序算法中调用不同的比较和交换函数，便可以实现不同的标准排序。这就是我们的新版本排序函数所采用的方法。
+
+我们在前面讲过，函数 strcmp 按字典顺序比较两个输入行。在这里，我们还需要一个以数值为基础来比较两个输入行，并返回与 strcmp 同样的比较结果的函数 numcmp。这些函数在 main 之前声明，并且，指向恰当函数的指针将被传递给 qsort 函数。在这里，参数的出错问题并不是问题的重点，我们将主要考虑指向函数的指针问题。
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#define MAXLINES 5000		//待排序的最大行数
+char *lineptr[MAXLINES];	//指向文本行的指针
+
+int readlines(char *lineptr[], int nlines);
+void writeliens(char *lineptr[], int nlines);
+
+void qsort(void *lineptr[], int left, int right, 
+		 int (*comp)(void *, void *));
+int numcmp(char *, char *);
+
+//对输入的文本进行排序
+main(int argc, char *argv[])
+{
+	int nlines;			//读入的输入行数
+    int numeric = 0;	//若进行数值排序，则 numeric 的值为 1
+    
+    if (argc > 1 && strcmp(argv[1], "-n") == 0) {
+        numeric = 1;
+    }
+    if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+        qsort((void**) lineptr, 0, nlines-1,
+             (int (*)(void*, void*))(numeric ? numcmp : strcmp));
+        writelines(lineptr, nlines);
+        return 0;
+    } else {
+        printf("input too big to sort\n");
+    }
+}
+```
+
+
+
+在调用函数 qsort 的语句中，strcmp 和 numcmp 是函数的地址。因为它们是函数，所以前面不需要加上取地址运算符 &，同样的原因，数组名前面也不需要 & 运算符。
+
+改写后的 qsort 函数能够处理任何数据类型，而不仅仅限于字符串。从函数 qsort 的原型可以看出，它的参数表包括一个指针数组、两个整数和一个有两个指针参数的函数。其中，指针数组参数的类型为通用指针类型 void *。**由于任何类型的指针都可以转换为 void * 类型，并且在将它转换回原来的类型时不会丢失信息**，所以，调用 qsort 函数时可以将参数强制转换为 void * 类型。比较函数的参数也要执行这种类型的转换。这种转换通常不会影响到数据的实际表示，但要确保编译器不会报错。
+
+```c
+//qsort函数：以递增顺序对 v[left]...v[right] 进行排序
+void qsort(void *v[], int left, int right, 
+          int (*comp)(void *, void *))
+{
+    int i, last;
+    void swap(void *v[], int, int);
+    if (left >= right) {	//若数组包含的元素数少于两个，则不执行任何操作	
+        return;
+    }
+    //将划分子集的元素；整数除法会截断结果中的小数部分
+    swap (v, left, (left + right)/2);	
+    last = left;	//移动到 v[0]
+    for (i = left + 1; i <= right; i++) {	//划分子集
+        if ((*comp)(v[i], v[left]) < 0) {
+            swap(v, ++last, i);
+        }
+    }
+    swap(v, left, last);	//恢复划分子集的元素
+    qsort(v, left, last-1, comp);
+    qsort(v, last+1, right, comp);
+}
+```
+
+
+
+我们仔细研究一下其中的声明。qsort 函数的第四个参数声明如下：
+
+int (*comp)(void *, void *)
+
+它表明 comp 是一个指向函数的指针，该函数具有两个 void * 类型的参数，其返回值类型为 int。
+
+在下列语句中：
+
+if ((*comp)(v[i], v[left]) < 0)
+
+comp 的使用和其声明是一致的，comp 是一个指向函数的指针，*comp 代表一个函数。下列语句是对该函数进行调用：
+
+(*comp)(v[i], v[left])
+
+其中的圆括号是必须的，这样才能够保证其中的各个部分正确结合。如果没有括号，例如写成下面的形式：
+
+int *comp(void *, void *)	//错误示例
+
+则表明 comp 是一个函数，该函数返回一个指向 int 类型的指针，这同我们的本意显然有很大的差别。
+
+我们在前面讲过函数 strcmp，它用于比较两个字符串。这里介绍的函数 numcmp 也是比较两个字符串，但它通过调用 atof 计算字符串对应的数值，然后在此基础上进行比较：
+
+```c
+#include <stdlib.h>
+//numcmp函数：按数值顺序比较字符串 s1 和 s2
+int numcmp(char *s1, char *s2)
+{
+    double v1, v2;
+    
+    v1 = atof(s1);
+    v2 = atof(s2);
+    if (v1 < v2) {
+        return -1;
+    } else if(v1 > v2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+```
+
+
+
+交换两个指引的 swap 函数和本章前面所述的 swap 函数相同，但它的参数声明为 void * 类型。
+
+```c
+void swap(void *v[], int i, int j)
+{
+    void *temp;
+    
+    temp = v[i];
+    v[i] = v[j];
+    v[j] = temp;
+}
+```
 
 
 
 
 
+#### 5.12	复杂声明
+
+C 语言常常因为声明的语法问题而受到人们的批评，特别是涉及到函数指针的语法。C 语言的语法力图使声明和使用相一致。对于简单的情况，C 语言的做法是很有效的，但是，如果情况比较复杂，则容易让人混淆，原因在于，C 语言的声明不能从左至右阅读，而且使用了太多的圆括号。我们来看下面所示的两个声明：
+
+int *f();		//f：是一个函数，它返回一个指向 int 类型的指针
+
+int (*pf)();	//pf：是一个指向函数的指针，该函数返回一个 int 类型的对象
+
+它们之间的含义差别说明：* 是一个前缀运算符，其优先级低于 ()，所以，声明中必须使用圆括号以保证正确的结合顺序。
+
+尽管实际中很少用到过于复杂的说明，但是，懂得如何理解甚至如何使用这些复杂的说明是很重要的。如何创建复杂的声明呢？一种比较好的方法是，使用 typedef 通过简单的步骤合成，这种方法我们将在 6.7 节中讨论。这里介绍另一种方法。略。	
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 第 6 章	结构
 
 
 
