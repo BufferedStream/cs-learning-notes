@@ -433,7 +433,7 @@ main()
 }
 
 //getline函数：将一行读入到 s 中并返回其长度
-int geline(char s[], int lim)
+int getline(char s[], int lim)
 {
     int c, i;
     
@@ -765,6 +765,70 @@ while（还有未处理的行）
 ​		打印该行
 
 尽管我们可以把所有的代码都放在主程序 main 中，但更好的做法是，利用其结构把每一部分设计成一个独立的函数。分别处理 3 个小的部分比处理一个大的整体更容易，因为这样可以把不相关的细节隐藏在函数中，从而减少了不必要的相互影响的机会，并且，这些函数也可以在其他程序中使用。
+
+我们用函数 getline 实现 “还有未处理的行”，该函数在第 1 章中介绍过：用 printf 函数实现 “打印该行”，这个函数是现成的，别人已经提供了。也就是说，我们只需要编写一个判定 “该行包含指定的模式” 的函数。
+
+我们编写函数 strindex(s, t) 实现该目标。该函数返回字符串 t 在字符串 s 中出现的起始位置或索引。当 s 不包含 t 时，返回值为 -1。由于 C 语言数组的下标从 0 开始，下标的值只可能为 0 或正数，因此可以用像 -1 这样的负数表示失败的情况。如果以后需要进行更复杂的模式匹配，只需替换 strindex 函数即可，程序的其余部分可保持不变。（标准库中提供的库函数 strstr 的功能类似于 strindex 函数，但该库函数返回的是指针而不是下标值。）
+
+完成这样的设计后，编写整个程序的细节就直截了当了。下面列出的就是一个完整的程序，读者可以查看各部分是怎样组合在一起的。我们现在查找的模式是字符串字面值，它不是一种最通用的机制。我们在这里只简单讨论字符数组的初始化方法，第 5 章将介绍如何在程序运行时将模式作为参数传递给函数。其中，getline 函数较前面的版本也稍有不同，读者可将它与第 1 章中的版本进行比较，或许会得到一些启发。
+
+```c
+#include <stdio.h>
+#define MAXLINE 1000	//最大输入行长度
+
+int getlien(char line[], int max);
+int strindex(char source[], char searchfor[]);
+
+char pattern[] = "ould";	//待查找的模式
+
+//找出所有与模式匹配的行
+main()
+{
+    char line[MAXLINE];
+    int found = 0;
+    
+    while (getline(line, MAXLINE) > 0) {
+        if (strindex(line, pattern) >= 0) {
+            printf("%s", line);
+            found++;
+        }
+    }        
+}
+
+//getline函数：将行保存到 s 中，并返回该行的长度
+int getline(char s[], int lim)
+{
+	int c, i;
+    
+    i = 0;
+    while (--lim > 0 && (c=getchar()) != EOF && c != '\n') {
+        s[i++] = c;
+    }
+        
+    if (c == '\n') {
+        s[i++] = c;
+    }
+    s[i] = '\0';
+    return i;
+}
+
+//strindex函数：返回 t 在 s 中的位置，若未找到则返回 -1
+int strindex(char s[], char t[])
+{
+    int i, j, k;
+    for (i = 0; s[i] != '\0'; i++) {
+        for (j=i, k=0; t[k] != '\0' && s[j]==t[k]; j++, k++) {
+            ;
+        }
+        if (k > 0 && t[k] == '\0') {
+            return i;
+        }   
+    }
+    return -1;
+}
+```
+
+
 
 
 
@@ -1969,25 +2033,157 @@ hello, world
 
 程序 echo 的第一个版本将 argv 看成是一个字符指针数组：
 
+```c
+#include <stdio.h>
+
+//回显程序命令行参数；版本1
+main(int argc, char *argv[])
+{
+	int i;
+
+    for (i = 1; i < argc; i++) {
+        printf("%s%s", argv[i], (i < argc-1) ? " " : "");
+    }
+    printf("\n");
+    return 0;
+}
+```
 
 
 
+因为 argv 是一个指针数组的指针，所以，可以通过指针而非数组下标的方式处理命令参数。echo 程序的第二个版本是在对 argv 进行自增运算、对 argc 进行自减运算的基础实现的，其中 argv 是一个指向 char 类型的指针的指针：
+
+```c
+#include <stdio.h>
+
+//回显程序命令行参数；版本2
+main(int argc, char *argv[])
+{
+    while (--argc > 0) {
+        printf("%s%s", *++argv, (argc > 1) ? " " : "");
+    }
+    printf("\n");
+    return 0;
+}
+```
 
 
 
+因为 argv 是一个指向参数字符串数组起始位置的指针，所以，自增运算（++argv）将使得它在最开始指向 argv[1] 而非 argv[0]。每执行依次自增运算，就使得 argv 指向下一个参数，*argv 就是指向那个参数的指针。与此同时，argc 执行自减运算，当它变成 0 时，就完成了所有参数的打印。
+
+也可以将 printf 语句写成下列形式：
+
+printf((argc > 1) ? "%s " : "%s", *++argv);
+
+这就说明，printf 的格式化参数也可以是表达式。
+
+我们来看第二个例子。在该例子中，我们将增强 4.1 节中模式查找程序的功能。在 4.1 节中，我们将查找模式内置到程序中了，这种解决方法显然不能令人满意。下面我们来效仿 UNIX 程序 grep 的实现方法改写模式查找程序，通过命令行的第一个参数指定待匹配的模式。
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define MAXLINE 1000
+
+int getline(char *line, int max);
+
+//find函数：打印与第一个参数指定的模式匹配的行
+main(int argc, char *argvp[])
+{
+    char line[MAXLINE];
+    int found = 0;
+    
+    if (argc != 2) {
+        printf("Usage: find pattern\n");
+    } else {
+        while (getline(line, MAXLINE) > 0) {
+            if (strstr(line, argv[1]) != NULL) {
+                printf("%s", line);
+                found++;
+            }
+        }
+    }
+    return found;
+}
+```
 
 
 
+标准库函数 strstr(s, t) 返回一个指针，该指针指向字符串 t 在字符串 s 中第一次出现的位置；如果字符串 t 没有在字符串 s 中出现，函数返回 NULL（空指针）。该函数声明在头文件 <string.h>。
+
+为了更进一步地解释指针结构，我们来改进模式查找程序。假定允许程序带两个可选参数。其中一个参数表示 “打印除匹配模式之外的所有行”，另一个参数表示 “每个打印的文本行前面加上相应的行号”。
+
+UNIX 系统中的 C 语言程序有一个公共的约定：以符号开头的参数表示一个可选标志或参数。假定用 -x（代表 “除....之外”）表示打印所有与模式不匹配的文本行，用 -n（代表 “行号”）表示打印行号，那么下列命令：
+
+find -x -n 模式
+
+将打印所有与模式不匹配的行，并在每个打印行的前面加上行号。
+
+可选参数应该允许以任意次序出现，同时，程序的其余部分应该与命令行中参数的数目无关。此外，如果可选参数能够组合使用，将会给使用者带来更大的方便，比如：
+
+find -nx 模式
+
+改写后的模式查找程序如下所示：
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define MAXLINE 1000
+
+int getline(char *line, int max);
+
+//find函数：打印与第一个参数指定的模式相匹配的行
+main(int argc, char *argv[])
+{
+    char line[MAXLINE];
+    long lineno = 0;
+    int c, except = 0, number = 0, found = 0;
+    
+    wihle (--argc > 0 && (*++argv)[0] == '-') {
+        while (c = *++argv[0]) {
+            switch (c) {
+                case 'x':
+                   except = 1;
+                   break;
+                case 'h':
+                   number = 1;
+                   break;
+                default:
+                   printf("find: illegal option %c\n", c);\
+                   argc = 0;
+                   found = -1;
+                   break;
+            }
+        }
+    }
+    if (argc != 1) {
+        printf("Usage: find -x -n pattern\n");
+    } else {
+        while (getline(line, MAXLINE) > 0) {
+            lineno++;
+            if ((strstr(line, *argv) != NULL) != except) {
+                if (number) {
+                    printf("%ld:", lineno);
+                }
+                printf("%s", line);
+                found++;
+            }
+        }
+    }
+    return found;
+}
+```
 
 
 
+在处理每个可选参数之前，argc 执行自减运算，argv 执行自增运算。循环语句结束时，如果没有错误，则 argc 的值表示还没有处理的参数数目，而 argv 则指向这些未处理参数中的第一个参数。因此，这时 argc 的值应为 1，而 *argv 应该指向模式。注意， *++argv 是一个指向参数字符串的指针，因此 ( *++argv)[0] 是它的第一个字符（另一种有效形式是 **++argv）。因为 [] 与操作符的集合优先级比 * 和 ++ 高，所以在上述表达式中必须使用圆括号，否则编译器将会把该表达式当作 *++(argv[0])。实际上，我们在内层循环中就使用了表达式 *++argv[0]，其目的是遍历一个特定的参数串。在内层循环中，表达式 *++argv[0] 对指针 argv[0] 进行了自增运算。
+
+很少有人使用比这更复杂的指针表达式。如果遇到这种情况，可以将它们分为两步三步来理解，这样会更直观一些。
 
 
 
+#### 5.11	指向函数的指针
 
-
-
-
+在 C 语言中，
 
 
 
