@@ -2329,12 +2329,17 @@ int (*pf)();	//pf：是一个指向函数的指针，该函数返回一个 int �
 
 ### 第 6 章	结构
 
+结构是一个或多个变量的集合，这些变量可能为不同的类型，为了处理的方便而将这些变量组织在一个名字之下。（某些语言将结构称为 “记录”，比如 Pascal 语言。）由于结构将一组相关的变量看作一个单元而不是各自独立的实体，因此结构有助于组织复杂的数据，特别是在大型的程序中。
 
+工资记录是用来描述结构的一个传统例子。每个雇员由一组属性描述，如姓名、地址、社会保险号、工资等。其中的某些属性也可以是结构，例如姓名可以分成几部分，地址甚至工资也可能出现类似的情况。C 语言汇总更典型的一个例子来自于图形领域：点由一对坐标定义，矩形由两个点定义，等等。
 
+ANSI 标准在结构方面最主要的变化是定义了结构的赋值操作——结构可以拷贝、赋值、传递给函数，函数也可以返回结构类型的返回值。多年以前，这一操作就已经被大多数的编译器所支持，但是，直到这一标准才对其属性就行了精确定义。在 ANSI 标准中，自动结构和数组现在也可以进行初始化。
 
 
 
+#### 6.1	结构的基本知识
 
+我们首先来建立一些适用于图形领域的结构。点是最基本的对象，假定用 x 与 y 坐标表示它，且 x、y 的坐标值都为整数（参见图 6-1）
 
 
 
@@ -2342,30 +2347,55 @@ int (*pf)();	//pf：是一个指向函数的指针，该函数返回一个 int �
 
 
 
+我们可以采用结构存放这两个坐标，其声明如下：
 
+struct point {
 
+​	int x;
 
+​	int y;
 
+};
 
+关键字 struct 引入结构声明。结构声明由包含在花括号内的一系列声明组成。关键字 struct 后面的名字是可选的，称为结构标记（这里是 point）。结构标记用于为结构命名，在定义之后，结构标记就代表花括号内的声明，可以用它作为该声明的简写形式。
 
+结构中定义的变量称为成员。结构成员、结构标记和普通变量（即非成员）可以采用相同的名字，它们之间不会冲突，因为通过上下文分析总可以对它们进行区分。另外，不同结构中的成员可以使用相同的名字，但是，从编程风格方面来说，通常只有密切相关的对象才会使用相同的名字。
 
+struct 声明定义了一种数据类型。在标志结构成员表结束的右花括号之后可以跟一个变量表，这与其它基本类型的变量声明是相同的。例如：
 
+struct { ... } x, y, z;
 
+从语法角度来说，这种方式的声明与声明
 
+int x, y, z;
 
+具有类似的意义。这两个声明都将 x、y 与 z 声明为指定类型的变量，并且为它们分配存储空间。
 
+如果结构声明的后面不带变量表，则不需要为它分配存储空间，它仅仅描述了一个结构的模板或轮廓。但是，如果结构声明中带有标记，那么在以后定义结构实例时便可以使用该标记定义。例如，对于上面给出的结构声明 point，语句
 
+struct point pt;
 
+定义了一个 struct point 类型的变量 pt。结构的初始化可以在定义的后面使用初值表进行。初值表中同每个成员对应的初值必须是常量表达式，例如：
 
+struct point maxpt = {320, 200};
 
+自动结构也可以通过赋值初始化，还可以通过调用返回相应类型结构的函数进行初始化。
 
+在表达式中，可以通过下列形式引用某个特定结构中的成员：
 
+**结构名.成员**
 
+其中的结构成员运算符 "." 将结构名与成员名连接起来。例如，可用下列语句打印点 pt 的坐标：
 
+printf("%d,%d", pt.x, pt.y);
 
+或者通过下列代码计算原点 (0,0) 到点 pt 的距离：
 
+double dist, sqrt(double);
 
+dist = sqrt((double)pt.x * pt.x + (double)pt.y * pt.y);
 
+结构可以嵌套。我们可以用对角线上的两个点来定义矩形（参见图 6-2），相应的结构定义如下：
 
 
 
@@ -2373,99 +2403,490 @@ int (*pf)();	//pf：是一个指向函数的指针，该函数返回一个 int �
 
 
 
+struct rect {
 
+​	struct point pt1;
 
+​	struct point pt2;
 
+};
 
+结构 rect 包含两个 point 类型的成员。如果按照下列方式声明 screen 变量：
 
+strcut rect screen;
 
+则可以用语句 
 
+screes.pt1.x
 
+引用 screen 的成员 pt1 的 x 坐标。
 
 
 
 
 
+#### 6.2	结构与函数
 
+结构的合法操作只有几种：作为一个整体复制和赋值，通过 & 运算符取地址，访问其成员。其中，复制和赋值包括向函数传递参数以及从函数返回值。结构之间不可行进行比较。可以用一个常量成员值列表初始化结构，自动结构也可以通过赋值进行初始化。
 
+为了更进一步地理解结构，我们编写几个对点和矩形进行操作的函数。至少可以通过 3 中可能的方法传递结构：一是分别传递各个结构成员，二是传递整个结构，三是传递指向结构的指针。这 3 种方法各有利弊。
 
+首先来看一下函数 makepoint，它带有两个整型参数，并返回一个 point 类型的结构：
 
+```c
+//makepoint函数：通过 x、y 坐标构造一个点
+struct point makepoint(int x, int y) {
+	struct point temp;
+	
+	temp.x = x;
+	temp.y = y;
+	return temp;
+}
+```
 
 
 
+注意，参数名和结构成员同名不会引起冲突。事实上，使用重名可以强调两者之间的关系。
 
+现在可以使用 makepoint 函数动态地初始化任意结构，也可以向函数提供结构类型的参数。例如：
 
+```c
+struct rect screen;
+struct point middle;
+struct point makepoint(int, int);
 
+screen.pt1 = makepoint(0, 0);
+screen.pt2 = makepoint(XMAX, YMAX);
+middle = makepoint((screen.pt1.x + screen.pt2.x)/2),
+				((screen.pt1.y + screen.pt2.y)/2);
+```
 
 
 
+接下来需要编写一系列的函数对点执行算术运算。例如：
 
+```c
+//addpoints函数：将两个点相加
+struct addpoint(struct point p1, struct point p2)
+{
+	p1.x += p2.x;
+    p2.y += p2.y;
+    return p1;
+}
+```
 
 
 
+其中，函数的参数和返回值都是结构类型。**之所以直接将相加所得的结果赋值给 p1，而没有使用显式的临时变量存储，是为了强调结构类型的参数和其它类型的参数一样，都是通过值传递的。**
 
+如果传递给函数的结构很大，使用指针方式的效率通常比复制整个结构的效率要高。结构指针类似于普通变量指针。声明
 
+struct point *pp
 
+将 pp 定义为一个指向 struct point 类型对象的指针。如果 pp 指向一个 point 结构，那么 *pp 即为该结构，而 ( *pp).x 和 ( *pp).y 则是结构成员。可以按照下例中的方式使用 pp：
 
+```c
+struct point origin, *pp;
 
+pp = &origin;
+printf("origin is (%d,%d)\n", (*pp).x, (*pp).y);
+```
 
 
 
+其中，( *pp).x 中的圆括号是必需的，因为结构成员运算符 "." 的优先级比 " *" 的优先级高。表达式 *pp.x 的含义等价于 *(pp.x)，因为 x 不是指针，所以该表达式是非法的。
 
+结构指针的使用频率非常高，为了使用方便，C 语言提供了另一种简写方式，假定 p 是一个指向结构的指针，可以用 
 
+**P->结构成员**
 
+这种形式引用相应的结构成员。这样，就可以用下面的形式改写上面的一行代码：
 
+printf("origin is (%d,%d)\n", pp->x, pp->y);
 
+运算符 . 和 -> 都是从左至右结合的，所以，对于下面的声明：
 
+struct rect r, *rp = &r;
 
+以下 4 个表达式是等价的：
 
+r.pt1.x
 
+rp->pt1.x
 
+(r.pt1).x
 
+(rp->pt1).x
 
+在所有运算符种，下面 4 个运算符的优先级最高：结构运算符 "." 和 "->"、用于函数调用的 "()" 以及用于下标的 "[]"，因此，它们同操作数之间的结合也最紧密。例如，对于结构声明
 
+struct {
 
+​	int len;
 
+​	char *str;
 
+} *p; 
 
+表达式
 
+++p->len
 
+将增加 len 的值，而不是增加 p 的值，这是因为，其中的隐含括号关系是 ++(p->len)。可以使用括号改变结合次序。例如：(++p)->len 将先执行 p 的加 1 操作，再对 len 执行操作；而 (p++)->len 则先对 len 执行操作，然后再将 p 加 1（该表达式中的括号可以省略）。
 
+同样的道理，* p->str 读取的是指针 str 所指向的对象的值；*p->str++ 先读取指针 str 指向的对象的值，然后再将 str 加 1（与 *s++ 相同）；( *p->str)++ 将指针 str 指向的对象的值加 1； *p++->str 先读取指针 str 指向的对象的值，然后再将 p 加 1。
 
 
 
 
 
+#### 6.3	结构数组
 
+考虑编写这样一个程序，它用来统计输入中各个 C 语言关键字出现的次数。我们需要用一个字符串数组存放关键字名，一个整型数组存放相应关键字的出现次数。一种实现方法是，使用两个独立的数组 keyword 和 keycount 分别存放它们，如下所示
 
+char *keyword[NKEYS];
 
+int keycount[NKEYS];
 
+我们注意到，这两个数组的大小相同，考虑到该特点，可以采用另一种不同的组织方式，也就是我们这里所说的结构数组。每个关键字项包括一对变量：
 
+char *word;
 
+int count;
 
+这样的多个变量对共同构成一个数组。我们来看下面的声明：
 
+struct key {
 
+​	char *word;
 
+​	int count;
 
+} keytab[NKEYS];
 
+它声明了一个结构类型 key，并定义了该类型的结构数组 keytab，同时为其分配存储空间。数组 keytab 的每个元素都是一个结构。上述声明也可以写成下列形式：
 
+struct key {
 
+​	char *word;
 
+​	int count;
 
+};
 
+struct key keytab[NKEYS];
 
+因为结构 keytab 包含一个固定的名字集合，所以，最好将它声明为外部变量，这样，只需要初始化依次，所有的地方都可以使用。这种结构的初始化方法同前面所述的初始化方法类似——在定义的后面通过一个用圆括号括起来的初值表进行初始化，如下所示：
 
+```c
+struct key {
+	char *word;
+	int count;
+} keytab[] = {
+	"auto", 0,
+    "break", 0,
+    "case", 0,
+    "char", 0,
+    "const", 0,
+    "contine", 0,
+    "default", 0,
+    /* ... */
+    "unsigned", 0,
+    "void", 0,
+    "volatile", 0,
+    "while", 0,
+};
+```
 
 
 
+与结构成员相对应，初值也要按照成对的方式列出。更精确的做法是，将每一行（即每个结构）的初值都括在花括号内，如下所示：
 
+{ "auto", 0 },
 
+{ "break", 0 },
 
+{ "caes", 0},
 
+....
 
+但是，如果初值是简单变量或字符串，并且其中的任何值都不为空，则内层的花括号可以省略。通常情况下，如果初值存在并且方括号 [ ] 中没有数值，编译程序将计算数组 keytab 中的项数。
 
+在统计关键字出现次数的程序中，我们首先定义了 keytab。主程序反复调用函数 getword 读取输入，每次读取一个单词。每个单词将通过折半查找函数（参见第 3 章）在 keytab 中进行查找。注意，关键字列表必须按升序存储在 keytab 中。
 
 
+
+折半查找函数：
+
+这里通过一个折半查找函数说明三路判定程序的用法。该函数用于判定已排序的数组 v 中是否存在某个特定的值 x。数组 v 的元素必须以升序排列。如果 v 中包含 x，则该函数返回 x 在 v 中的位置（介于 0~n-1 之间的一个整数）；否则，该函数返回 -1。
+
+在折半查找时，首先将输入值 x 与数组 v 的中间元素进行比较。如果 x 小于中间元素的值，则在该数组的前半部分查找；否则，在该数组的后半部分查找。在这两种情况下，下一步都是将 x 与所选部分的中间元素进行比较。这个过程一直进行下去，直到找到指定的值或查找范围为空。
+
+```c
+//binsearch函数：在 v[0]<=v[1]<=v[2]<= ... <= v[n-1] 中查找 x
+int binsearch(int x, int v[], int n)
+{
+    int low, high, mid;
+    
+    low = 0;
+    high = n - 1;
+    while (low <= high) {
+        mid = (low+high)/2;
+        if (x < v[mid]) {
+            high = mid - 1;
+        } else if (x > v[mid]) {
+            low = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+ 	return -1;	//没有匹配的值
+}
+```
+
+
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAXWORD 100
+
+int getword(char *, int);
+int binsearch(char *, struct key *, int);
+
+//统计输入中 C 语言关键字的出现次数
+main()
+{
+    int n;
+    char word[MAXWORD];
+    
+    while (getword(word, MAXWORD) != EOF) {
+        if (isalpha(word[0])) {
+            if ((n = binsearch(word, keytab, NKEYS)) >= 0) {
+                keytab[n].count++;
+            }
+        }
+    }
+    for (n = 0; n < NKEYS; n++) {
+        if (keytab[n].count > 0) {
+            printf("%4d %s\n",
+                  keytab[n].count, keytab[n].word);
+        }
+    }
+    return 0;
+}
+
+//binsearch函数：在 tab[0] 到 tab[n-1] 中查找单词
+int binsearch(char *word, struct key tab[], int n)
+{
+    int cond;
+    int low, high, mid;
+    
+    low = 0;
+    high = n - 1;
+    while (low <= high) {
+        mid = (low+high)/2;
+        if ((cond = strcmp(word, tab[mid].word)) < 0)  {
+            high = mid - 1;
+        } else if (cond > 0) {
+            low = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+ 	return -1;	//没有匹配的值
+}
+```
+
+
+
+函数 getword 将在稍后介绍，这里只需要了解它的功能是每调用一次该函数，将读入一个单词，并将其复制到名字为该函数的第一个参数的数组中。
+
+NKEYS 代表 keytab 中关键字的个数。尽管可以手工计算，但由机器实现会更简单，更安全，当列表可能变更时尤其如此。一种解决方法是，在初值表的结尾处加上一个空指针，然后循环遍历 keytab，直到读到尾部的空指针为止。
+
+但实际上并不需要这样做，因为数组的长度在编译时已经完全确定，它等于数组项的长度乘以项数，因此，可以得出项数为：
+
+Keytab 的长度/struct key 的长度
+
+C 语言提供了编译时（complile-time）一元运算符 sizeof，它可用来计算任一对象的长度。表达式
+
+**sizeof 对象**
+
+以及
+
+**sizeof(类型名)**
+
+将返回一个整型值，它等于指定对象或类型占用的存储空间字节数。（严格地说，sizeof 的返回值时无符号整型值，其类型为 size_t，该类型在头文件 <stddef.h> 中定义。）其中，对象可以是变量、数组或结构；类型可以是基本类型，如 int、double，也可以是派生类型，如结构类型或指针类型。
+
+在该例子中，关键字的个数等于数组的长度除以单个元素的长度。下面的 #define 语句使用了这种方法设置 NKEYS 的值：
+
+#define NKEYS (sizeof keytab / sizeof(struct key))
+
+另一种方法是用数组的长度除以一个指定元素的长度，如下所示：
+
+#define NKEYS (sizeof keytab / sizeof(keytab[0]))
+
+使用第二种方法，即使类型改变了，也不需要改动程序。
+
+条件编译语句 #if 中不能使用 sizeof，因为预处理器不对类型名进行分析。但预处理器并不计算 #define 语句中的表达式，因此，在 #define 中使用 sizeof 是合法的。
+
+下面来讨论函数 getword。我们这里给出一个更通用的 getword 函数。该函数的功能已超出这个示例程序的要求，不过，函数本身并不复杂。getword 从输入中读取下一个单词，单词可以是以字母开头的字母和数字串，也可以是一个非空白符字符。函数返回值可能是单词的第一个字符、文件结束符 EOF 或字符本身（如果该字符不是字母字符的话）。
+
+```c
+//getword函数：从输入中读取下一个单词或字符
+int getword(char *word, int lim)
+{
+    int c, getch(void);
+    void ungetch(int);
+    char *w = word;
+    
+    while (isspace(c = getch())) {
+        ;
+    }
+    if (c != EOF) {
+        *w++ = c;
+    }
+    if (!isalpha(c)) {
+        *w = '\0';
+        return c;
+    }
+    for ( ; --lim > 0; w++) {
+        if (!isalnum(*w = getch())) {
+            ungetch(*w);
+            break;
+        }
+    }
+    *w = '\0';
+    return word[0];
+}
+```
+
+
+
+getword 函数使用了第 4 章中的函数 getch 和 ungetch。当读入的字符不属于字母数字的集合时，说明 getword 多读入了一个字符。随后，调用 ungetch 将多读的一个字符返回到输入中，以便下一次调用使用。Getword 还使用了其它一些函数：isspace 函数跳过空白符，isalpha 函数识别字母，isalnum 函数识别字母和数字。所有这些函数都定义在标准头文件 <ctype.h> 中。
+
+
+
+
+
+#### 6.4	指向结构的指针
+
+为了进一步说明指向结构的指针和结构数组，我们重新编写关键字统计程序，这次采用指针，而不使用数组下标。
+
+keytab 的外部声明不需要修改，但 main 和 binsearch 函数必须修改。修改后的程序如下：
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#define MAXWORD 100
+
+int getword(char *, int);
+struct key *binsearch(char *, struct key *, int);
+
+//统计输入中 C 语言关键字的出现次数
+main()
+{
+    char word[MAXWORD];
+    struct key *p;
+    
+    while (getword(word, MAXWORD) != EOF) {
+        if (isalpha(word[0])) {
+            if ((p = binsearch(word, keytab, NKEYS)) != null) {
+                p->count++;
+            }
+        }
+    }
+    for (p = keytab; p < keytab + NKEYS; p++) {
+        if (p->count > 0) {
+            printf("%4d %s\n", p->count, p->word);
+        }
+    }
+    return 0;
+}
+
+//binsearch函数：在 tab[0] 到 tab[n-1] 中查找单词
+struct key *binsearch(char *word, struct key *tab, int n)
+{
+    int cond;
+    struct key *low = &tab[0];
+    struct key *high = &tab[n];
+    struct key *mid;
+    
+    while (low < high) {
+        mid = low + (high-low)/2;
+        if ((cond = strcmp(word, mid->word)) < 0)  {
+            high = mid;
+        } else if (cond > 0) {
+            low = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+ 	return NULL;	//没有匹配的值
+}
+```
+
+
+
+这里需要注意几点。首先，binsearch 函数在声明中必须声明：它返回的值类型是要给指向 struct key 类型的指针，而非整型，这在函数原型及 binserach 函数中都要声明。如果 binsearch 找到与输入单词匹配的数组元素，它将返回一个指向该元素的指针，否则返回 NULL。
+
+其次，keytab 的元素在这里是通过指针访问的。这就需要对 binsearch 做较大的修改。
+
+在这里，low 和 high 的初值分别是指向表头元素的指针和指向表尾后面的一个元素的指针。
+
+这样，我们就无法简单地通过下列表达式计算中间元素的位置：
+
+mid = (low+high) / 2	//错误示例
+
+这是因为，两个指针之间的加法运算是非法的。但是，指针的减法运算却是合法的，high-low 的值就是数组元素的个数，因此，可以用下列表达式：
+
+mid = low + (high-low)/2
+
+将 mid 设置为指向位于 high 和 low 之间的中间元素的指针。
+
+对算法的最重要修改在于，要确保不会生成非法的指针，或者是试图访问数组范围之外的元素。问题在于，&tab[-1] 和 &tab[n] 都超出了数组 tab 的范围。前者是绝对非法的，而对后者的间接引用也是非法的。但是，C 语言的定义保证数组末尾之后的第一个元素（即 &tab[n]）的指针算术运算可以正确执行。
+
+主程序 main 中有下列语句：
+
+for (p = keytab; [ <keytab + NKEYS; p++])
+
+如果 p 是指向结构的指针，则对 p 的算术运算需要考虑结构的长度，所以，表达式 p++ 执行时，将在 p 的基础上加上一个正确的值，以确保得到结构数组的下一个元素，这样，上述测试条件便可以保证循环正确终止。
+
+但是，千万不要认为结构的长度等于各成员长度的和。因为不同的对象有不同的对齐要求，所以，结构中可能会出现未命名的 ”空穴“（hole）。例如，假设 char 类型占用一个字节，int 类型占用 4 个字节，则下列结构：
+
+```c
+struct {
+	char c;
+	int i;
+};
+```
+
+
+
+可能需要 8 个字节的存储空间，而不是 5 个字节。使用 sizeof 运算符可以返回正确的对象长度。
+
+最后，说明一点程序的格式问题：当函数的返回值类型比较复杂时（如结构指针），例如
+
+struct key *binsearch(char *word, struct key *tab, int n)
+
+很难看出函数名，也不太容易使用文本编辑器找到函数名。我们可以采用另一种格式书写上述语句：
+
+struct key *
+
+binsearch(char *word, struct key *tab, int n)
+
+具体采用哪种写法属于个人的习惯问题，可以选择自己喜欢的方式并始终保持自己的风格。
+
+
+
+
+
+#### 6.5	自引用结构
+
+假定我们需要处理一个更一般会的问题：统计输入中所有单词的出现次数。因为预先不知道出现的单词列表，所以无法方便地排序，并使用折半查找；也不能分别对输入中地每个单词都执行一次线性查找，看它在前面是否已经出现，这样做，程序的执行将花费太长的时间
 
 
 
