@@ -2341,11 +2341,9 @@ ANSI 标准在结构方面最主要的变化是定义了结构的赋值操作—
 
 我们首先来建立一些适用于图形领域的结构。点是最基本的对象，假定用 x 与 y 坐标表示它，且 x、y 的坐标值都为整数（参见图 6-1）
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE8.jpg"/>
+</div>
 
 我们可以采用结构存放这两个坐标，其声明如下：
 
@@ -2397,11 +2395,9 @@ dist = sqrt((double)pt.x * pt.x + (double)pt.y * pt.y);
 
 结构可以嵌套。我们可以用对角线上的两个点来定义矩形（参见图 6-2），相应的结构定义如下：
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE9.jpg"/>
+</div>
 
 struct rect {
 
@@ -2910,11 +2906,9 @@ state = IN;
 
 该算法采用的是散列查找方法——将输入的名字转换为一个小的非负整数，该整数随后将作为一个指针数组的下标。数组的每个元素指向某个链表的表头，链表中的各个块用于描述具有该散列值的名字。如果没有名字散列到该值，则数组元素的值为 NULL（参见图 6-4）。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%20-%20%E5%9B%BE10.jpg"/>
+</div>
 
 链表中的每个块都是一个结构，它包含一个指向名字的指针、一个指向替换文本的指针以及一个指向该链表后继块的指针。如果指向链表后继块的指针为 NULL，则表明链表结束。
 
