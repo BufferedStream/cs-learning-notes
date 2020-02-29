@@ -74,4 +74,4 @@
 - [图解HTTP 读书笔记](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E5%9B%BE%E8%A7%A3HTTP%20%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.md)
 - [汇编语言读书笔记](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.md)
 - [C程序设计语言读书笔记](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.md)
-
+- [现代操作系统读书笔记](https://github.com/BufferedStream/cs-learning-notes/blob/master/notes/%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.md)
