@@ -209,6 +209,8 @@ PUT http://foo.com/books
 }
 ```
 
+
+
 服务器应该先根据请求提供的 id 解析查找，如果存在一个对应 id 的元素，就用请求中的数据整体替换已经存在的资源；如果没有，就用 ”把这个 id 对应的资源从 【空】 替换为 【请求数据】“。直观看起来就是 ”创建“ 了。
 
 与 PUT 相比，POST 更像是一个 “factory”，通过一组必要的数据创建出完整的资源。
@@ -222,7 +224,7 @@ PUT http://foo.com/books
 
 **关于安全性**
 
-我们常常听到 GET 不如 POST安全，因为 POST 用 bode 传输数据，而 GET 用 url 传输，更加容易看到。但是从攻击的角度，无论是 GET 还是 POST 都不够安全，因为 HTTP 本身是**明文协议**。**每个 HTTP 请求和返回的每个 byte 都会在网络上明文传播，不管是 url，header 还是 body**。这完全不是一个 ”是否容易在浏览器地址栏上看到“ 的问题。
+我们常常听到 GET 不如 POST安全，因为 POST 用 body 传输数据，而 GET 用 url 传输，更加容易看到。但是从攻击的角度，无论是 GET 还是 POST 都不够安全，因为 HTTP 本身是**明文协议**。**每个 HTTP 请求和返回的每个 byte 都会在网络上明文传播，不管是 url，header 还是 body**。这完全不是一个 ”是否容易在浏览器地址栏上看到“ 的问题。
 
 为了避免传输中数据被窃取，必须做从客户端到服务器的端端加密。业界的通行做法就是 https——即用 SSL 协议协商出的密钥加密明文的 http 数据。这个加密的协议和 HTTP 协议本身相互独立。如果是利用 HTTP 开发公网的站点/App，要保证安全，https 是最最基本的要求。
 
@@ -241,7 +243,6 @@ POST http://foo.com/user/login
 ```
 
 安全是一个巨大的主题，有由很多细节组成的一个完备体系，比如返回私密数据的mask，XSS，CSRF，跨域安全，前端加密，钓鱼，salt，…… POST和GET在安全这件事上仅仅是个小角色。因此单独讨论POST和GET本身哪个更安全意义并不是太大。只要记得一般情况下，私密数据传输用POST + body就好。
-
 
 **关于编码**
 
@@ -946,7 +947,6 @@ Ajax 的核心技术是名为 XMLHttpRequest 的 API，通过 JavaScript 脚本�
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE3.jpg "/> </div><br>
 
 
-
 **Comet** 的解决方法
 
 一旦服务器端有内容更新了，Comet 不会让请求等待，而是直接给客户端返回响应。这是一种通过延迟应答，模拟实现服务器端向客户端推送（Server Push）的功能。
@@ -956,7 +956,6 @@ Ajax 的核心技术是名为 XMLHttpRequest 的 API，通过 JavaScript 脚本�
 内容上虽然可以做到实时更新，但为了保留响应，一次连接的持续时间也变长了。期间，为了维持连接会消耗更多的资源。另外，Comet 也仍未解决 HTTP 协议本身存在的问题。
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE4.jpg "/> </div><br>
-
 
 
 **SPDY** 的目标
@@ -976,7 +975,6 @@ SPDY 没有完全改写 HTTP 协议，而是在 TCP/IP 的应用层与运输层�
 SPDY 以会话层的形式加入，控制对数据的流动，但还是采用 HTTP 建立通信连接。因此，可照常使用 HTTP 的 GET 和 POST 等方 法、Cookie 以及 HTTP 报文等。
 
 <div align="center"> <img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E5%9B%BE%E8%A7%A3HTTP%20-%20%E5%9B%BE5.jpg"/> </div><br>
-
 
 
 使用 SPDY 后，HTTP 协议额外获得以下功能。
