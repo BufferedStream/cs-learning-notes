@@ -63,7 +63,9 @@ Redis 提供了简单的 TCP 通信协议，很多编程语言可以很方便地
 
 通常看，将数据放在内存中是不安全的，一旦发生断电或者机器故障，重要的数据可能就会丢失，因此 Redis 提供了两种持久化方式：RDB 和 AOF，即可以用两种策略将内存的数据保存到硬盘中（如图 1-1 所示），这样就保证了数据的可持久性，第 5 章我们将对 Redis 的持久化进行详细说明。
 
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE1.jpg"/>
+</div>
 
 
 
@@ -72,6 +74,10 @@ Redis 提供了简单的 TCP 通信协议，很多编程语言可以很方便地
 **7.主从复制**
 
 Redis 提供了复制功能，实现了多个相同数据的 Redis 副本（如图 1-2 所示），复制功能是分布式 Redis 的基础。第 6 章我们将对 Redis 的复制进行详细说明。
+
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE2.jpg"/>
+</div>
 
 
 
@@ -263,9 +269,13 @@ type 命令实际返回的就是当前键的数据结构类型，它们分别是
 
 可以看到每种数据结构都有两种以上的内部编码实现，例如 list 数据结构包含了 linkedlist 和 ziplist 两种内部编码。同时有些内部编码，例如 ziplist，可以作为多种外部数据结构的内部实现，可以通过 object encoding 命令查询内部编码：
 
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE3.jpg"/>
+</div>
 
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE4.jpg"/>
+</div>
 
 
 
@@ -302,6 +312,12 @@ Redis客户端与服务端的模型可以简化成图2-3，每次客户端调用
 其中第 2 步是重点要讨论的，因为 Redis 是单线程来处理命令的，所以一条命令从客户端达到服务端不会立刻被执行，所有命令都会进入一个队列中，然后逐个被执行。所以上面 3 个客户端命令的执行顺序是不确定的（如图 2-4 所示），但是可以确定不会有两条命令被同时执行（如图 2-5 所示），
 所以两条 incr 命令无论怎么执行最终结果都是 2，不会产生并发问题，这就是 Redis 单线程的基本模型。但是像发送命令、返回结果、命令排队肯定不像描述的这么简单，Redis 使用了 I/O 多路复用技术来解决 I/O 的问题，下一节将进行介绍。
 
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE5.jpg"/>
+</div>
+
+
+
 
 
 **2.为什么单线程还能这么快**
@@ -312,11 +328,9 @@ Redis客户端与服务端的模型可以简化成图2-3，每次客户端调用
 
 第二，非阻塞I/O，Redis使用epoll作为I/O多路复用技术的实现，再加上Redis自身的事件处理模型将epoll中的连接、读写、关闭都转换为事件，不在网络I/O上浪费过多的时间，如图2-6所示。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE6.jpg"/>
+</div>
 
 第三，单线程避免了线程切换和竞态产生的消耗。
 
@@ -335,6 +349,10 @@ Redis客户端与服务端的模型可以简化成图2-3，每次客户端调用
 
 字符串类型是 Redis 最基础的数据结构。首先键都是字符串类型，而且其他几种数据结构都是在字符串类型基础上构建的，所以字符串类型能为其他四种数据结构的学习奠定基础。如图 2-7 所示，字符串类型的值实际可以是字符串（简单的字符串、复杂的字符串（例如 JSON、XML））、数字
 （整数、浮点数），甚至是二进制（图片、音频、视频），但是值最大不能超过 512MB。
+
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE7.jpg"/>
+</div>
 
 
 
@@ -441,15 +459,11 @@ getrange key start end
 
 start和end分别是开始和结束的偏移量，偏移量从0开始计算
 
-表2-2是字符串类型命令的时间复杂度，开发人员可以参考此表，结合自身业务需求和数据大小选择适合的命令。
+表 2-2 是字符串类型命令的时间复杂度，开发人员可以参考此表，结合自身业务需求和数据大小选择适合的命令。
 
-
-
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE8.jpg"/>
+</div>
 
 
 
@@ -561,7 +575,9 @@ UserInfo getUserInfo(long id){
 
 几乎所有的编程语言都提供了哈希（hash）类型，它们的叫法可能是哈希、字典、关联数组。在Redis中，哈希类型是指键值本身又是一个键值对结构，形如value={{field1，value1}，...{fieldN，valueN}}，Redis键值对和哈希类型二者的关系可以用图2-14来表示。
 
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/Redis%20-%20%E5%9B%BE9.jpg"/>
+</div>
 
 
 
