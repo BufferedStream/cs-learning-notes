@@ -824,11 +824,9 @@ next 方法在获得（第 17 行）将要返回（第 20 行）的节点的值�
 
 图 4-4 指出一棵树如何用这种实现方法表示出来。图中向下的箭头是指向 firstChild （第一儿子）的链，而水平箭头是指向 nextSibling（下一兄弟）的链。因为 null 链太多了，所以没有把它们画出。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE24.jpg"/>
+</div>
 
 在图 4-4 的树中，节点 E 有一个链指向兄弟（F），另一链指向儿子（I），而有的节点这两种链都没有。
 
@@ -838,49 +836,45 @@ next 方法在获得（第 17 行）将要返回（第 20 行）的节点的值�
 
 树有很多应用。流行的用法之一是包括 UNIX 和 DOS 在内的许多常用操作系统中的目录结构。图 4-5 是 UNIX 文件系统中一个典型的目录。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE25.jpg"/>
+</div>
 
 这个目录的根是 /usr（名字后面的星号指出 /usr 本身就是一个目录）。/usr 有三个儿子：mark、alex 和 bill，它们自己也都是目录。因此，/user 包含三个目录并且没有正规的文件。文件名 /usr/mark/book/ch1.r 先后三次通过最左边的子节点而得到。在第一个 / 后的每个 / 都表示一条边；结果为一全**路径名**（pathname）。这个分级文件系统非常流行，因为它能够使得用户逻辑地组织数据。不仅如此，在不同目录下地两个文件还可以享有相同地名字，因为它们必然有从根开始的不同的路径从而具有不同的路径名。在 UNIX 文件系统中的目录就是含有它的所有儿子的一个文件，因此，这些目录几乎是完全按照上述的类型声明构造的。（在 UNIX 文件系统中每个目录还有一项指向该目录本身以及另一项指向该目录的父目录。因此，从技术上说，UNIX 文件系统不是树，而是类树。）事实上，按照 UNIX 的某些版本，如果将打印一个文件的标准命令应用到一个目录中，那么在该目录中的这些文件名能够在（与其他非 ASCII 信息一起的）输出中被看到。
 
 设我们想要列出目录中所有文件的名字。输出格式将是：深度为 d~i~ 的文件将被 d~i~ 次跳格（tab）缩进后打印其名。该算法在图 4-6 中以伪码给出。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE26.jpg"/>
+</div>
 
 算法的核心为递归方法 listAll。为了显示根时不进行缩进，该例程需要从深度 0 开始。这里的深度是一个内部簿记变量，而不是主调例程能够期望知道的参数。因此，驱动例程用于将递归例程和外界连接起来。
 
 算法逻辑简单易懂。文件对象的名字和适当的跳格次数一起打印出来。如果是一个目录，那么以递归方式一个一个地处理它所有的儿子。这些儿子均处在下一层的深度上，因此需要缩进一个附加的空间。整个输出在图 4-7 中表示。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE27.jpg"/>
+</div>
 
 这种遍历策略叫作**先序遍历**（preorder traversal）。在先序遍历中，对节点的处理工作是在它的诸儿子节点被处理之前（pre）进行的。很显然，当该程序运行时，第 1 行对每个节点恰好执行一次，因为每个名字只输出一次。由于第 1 行对每个节点最多执行一次，因此第 2 行也必然对每个节点执行一次。不仅如此，对于每个节点的每一个子节点第 4 行最多只能执行一次。但是，儿子的个数恰好比节点的个数少 1。最后，第 4 行每执行一次，for 循环就迭代一次，每当循环结束时再加上一次。因此，在每个节点上总的工作量是常数。如果有 N 个文件名需要输出，则运行时间就是 O(N)。
 
 另一种遍历树的常用方法是**后序遍历**（postorder traversal）。在后序遍历中，一个节点处的工作是在它的诸儿子节点被计算后进行的。例如，图 4-8 表示的是与前面相同的目录结构，其中圆括号内的数字代表每个文件占用的**磁盘区块**（disk blocks）的个数。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE28.jpg"/>
+</div>
 
 由于目录本身也是文件，因此它们也有大小。设我们想要计算被该树所有文件占用的磁盘区块的总数。最自然的做法是找出含于子目录 /usr/mark(30)、/user/alex(9) 和 /usr/bill(32) 的区块的个数。于是，磁盘区块的总数就是子目录中的区块的总数（71）加上 /usr 使用的一个区块，共 72 个区块。图 4-9 中的伪码方法 size 实现这种遍历策略。
 
 如果当前对象不是目录，那么 size 只返回它所占用的区块数。否则，被该目录占用的取快数将被加到在其所有子节点（递归地）发现的区块数中去。为了区别后序遍历策略和先序遍历策略之间的不同。图 4-10 显示每个目录或文件的大小是如何由该算法产生的。
 
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE29.jpg"/>
+</div>
 
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE30.jpg"/>
+</div>
 
 
 
@@ -898,11 +892,9 @@ next 方法在获得（第 17 行）将要返回（第 20 行）的节点的值�
 
 二叉树的一个性质是一颗平均二叉树的深度要比节点个数 N 小得多，这个性质有时很重要。分析表明，其平均深度为 O(根号N)，而对于特殊类型的二叉树，即**二叉查找树**（binary search tree），其深度的平均值是 O(logN)。不幸的是，正如图 4-12 中的例子所示，这个深度是可以大到 N-1 的。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE31.jpg"/>
+</div>
 
 
 
@@ -910,11 +902,9 @@ next 方法在获得（第 17 行）将要返回（第 20 行）的节点的值�
 
 因为一个二叉树结点最多有两个子节点，所以我们可以保存直接链接到它们的链。树节点的声明在结构上类似于双链表的声明，在声明中，节点就是由 **element**（元素）的信息加上两个到其他节点的引用（left 和 right）组成的结构（见图 4-13）。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE32.jpg"/>
+</div>
 
 我们习惯上在画链表时使用矩形框画出二叉树，但是，树一般画成圆圈并用一些直线连接起来，因为它们实际上就是图（graph）。当涉及树时，我们也不明显地画出 null 链，因为具有 N 个节点地每一棵二叉树都将需要 N+1 个 null 链。
 
@@ -926,11 +916,9 @@ next 方法在获得（第 17 行）将要返回（第 20 行）的节点的值�
 
 图 4-14 显示一个**表达式树**（expression tree）的例子。表达式树的树叶是**操作数**（operand），如常数或变量名，而其他的节点为**操作符**（operator）。由于这里所有的操作都是二元的，因此这颗特定的树正好是二叉树，虽然这是最简单的情况，但是节点还是有可能含有多于两个的儿子。一个节点也有可能只有一个儿子，如具有**一目减算符**（unaryminus operator）的情形。我们可以将通过递归计算左子树和右子树所得到的值应用在根处的运算符上而算出表达式树 T 的值。在本例中，左子树的值是 a+(b*c)，右子树的值是((d * e)+f)*g，因此整个树表示 (a+(b * c))+(((d * e)+f)*g)。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE33.jpg"/>
+</div>
 
 我们可以通过递归地产生一个带括号的左表达式，然后打印出在根处的运算符，最后再递归地产生一个带括号的右表达式而得到一个（对两个括号整体进行运算的）中缀表达式。这种一般的方法（左，节点，右）称为**中序遍历**（inorder traversal）。由于其产生的表达式类型，这种遍历很容易记忆。
 
@@ -954,15 +942,359 @@ next 方法在获得（第 17 行）将要返回（第 20 行）的节点的值�
 
 使二叉树成为二叉查找树的性质是，对于树中的每个节点 X，它的左子树中所有项的值小于 X 中的项，而它的右子树中所有项的值大于 X 中的项。注意，这意味着该树所有的元素可以用某种一致的方式排序。在图 4-15 中，左边的树是二叉查找树，但右边的树则不是。右边的树在其项是 6 的节点（该节点正好是根节点）的左子树中，有一个节点的项是 7。
 
-
-
-
-
-
+<div align=center>
+	<img src="https://raw.githubusercontent.com/BufferedStream/cs-learning-notes/master/notes/images/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%20-%20%E5%9B%BE34.jpg"/>
+</div>
 
 现在给出通常对二叉查找树进行的操作的简要描述。注意，由于树的递归定义，通常是递归地编写这些操作的例程。因为二叉查找树的平均深度是 O(logN)，所以一般不必担心栈空间被用尽。
 
 二叉查找树要求所有的项都能够排序。要写出一个一般的类，我们需要提供一个 interface（接口）来表示这个性质。这个接口就是 Comparable，第 1 章曾经描述过。该接口告诉我们，树中的两项总可以使用 compareTo 方法进行比较。由此，我们能够确定所有其他可能的关系。特别是我们不使用 equals 方法，而是根据两项相等当且仅当 compareTo 方法返回 0 来判断相等。另一种方法是使用一个函数对象，将在 4.3.1 节中描述。图 4-16 还指出，BinaryNode 类像链表中的节点类一样，是一个嵌套类。
+
+图 4-17 显示 BinarySearchTree 类架构，其中唯一的数据域是对根节点的引用，这个引用对于空树来说是 null。这些 public 方法使用了调用者 private 递归方法的一般技巧。
+
+现在描述某些私有方法。
+
+```java
+//图4-17  二叉查找树架构
+public class BinarySearchTree<AnyType extends Comparable<? super AnyType>> {
+
+    //图4-16  BinaryNode类
+    private static class BinaryNode<AnyType> {
+
+        //Constructors
+        BinaryNode(AnyType theElement) {
+            this(theElement, null, null);
+        }
+
+        BinaryNode(AnyType theElement, BinaryNode<AnyType> lt, BinaryNode<AnyType> rt) {
+            element = theElement;
+            left = lt;
+            right = rt;
+        }
+
+        AnyType element;            //The data in the node
+        BinaryNode<AnyType> left;   //Left child
+        BinaryNode<AnyType> right;  //Right child
+    }
+
+    private BinaryNode<AnyType> root;
+
+    public BinarySearchTree() {
+        root = null;
+    }
+
+    public void makeEmpty() {
+        root = null;
+    }
+
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+    public boolean contains(AnyType x) {
+        return contains(x, root);
+    }
+
+    public AnyType findMin() {
+        if(isEmpty()) {
+            throw new UnderflowException();
+        }
+        return findMin(root).element;
+    }
+
+    public AnyType findMax() {
+        if(isEmpty()) {
+            throw new UnderflowException();
+        }
+        return findMax(root).element;
+    }
+
+    public void insert(AnyType x) {
+        root = insert(x, root);
+    }
+
+    public void remove(AnyType x) {
+        root = remove(x, root);
+    }
+
+    public void printTree() {
+
+    }
+
+    /**
+     * 图4-18  二叉查找树的 contains 操作
+     * Internal method to find an item in a subtree
+     * @param x is item to search for
+     * @param t the node that roots the subtree
+     * @return true if the tiem is found; false otherwise
+     */
+    private boolean contains(AnyType x, BinaryNode<AnyType> t) {
+        if (t == null) {
+            return false;
+        }
+
+        int compareResult = x.compareTo(t.element);
+
+        if(compareResult < 0) {
+            return contains(x, t.left);
+        } else if (compareResult > 0) {
+            return contains(x, t.right);
+        } else {
+            return true;    //Match
+        }
+    }
+
+    /**
+     * 图4-20  对二叉查找树的 findMin 的递归实现和 findMax 的非递归实现
+     * Internal method to find the smallest item in a subtree
+     * @param t the node that roots the subtree
+     * @return node containing the smallest item
+     */
+    private BinaryNode<AnyType> findMin(BinaryNode<AnyType> t) {
+        if(t == null) {
+            return null;
+        } else if(t.left == null) {
+            return t;
+        }
+
+        return findMin(t.left);
+    }
+
+    /**
+     * Internal method to find the largest item in a subtree
+     * @param t the node that roots the subtree
+     * @return node containing the largest item
+     */
+    private BinaryNode<AnyType> findMax(BinaryNode<AnyType> t) {
+        if(t != null) {
+          while(t.right != null) {
+              t = t.right;
+          }
+        }
+
+        return t;
+    }
+
+    /**
+     * 图4-22  将元素插入到二叉查找树的例程
+     * Internal method to insert into a subtree
+     * @param x the item to insert
+     * @param t the node that roots the subtree
+     * @return the new root of the subtree
+     */
+    private BinaryNode<AnyType> insert(AnyType x, BinaryNode<AnyType> t) {
+        if(t == null) {
+            return new BinaryNode<>(x, null, null);
+        }
+
+        int compareResult = x.compareTo(t.element);
+
+        if(compareResult < 0) {
+            t.left = insert(x, t.left);
+        } else if(compareResult > 0) {
+            t.right = insert(x, t.right);
+        } else {
+               //Duplicate; do nothing
+        }
+
+        return t;
+    }
+
+    /**
+     * 图4-25  二叉查找树的删除例程
+     * Internal method to remove from a subtree
+     * @param x the item to remove
+     * @param t the node that roots the subtree
+     * @return the new root of the subtree
+     */
+    private BinaryNode<AnyType> remove(AnyType x, BinaryNode<AnyType> t) {
+        if(t == null) {
+            return t;   //Item not found; do nothing
+        }
+
+        int compareResult = x.compareTo(t.element);
+
+        if(compareResult < 0) {
+            t.left = remove(x, t.left);
+        } else if (compareResult > 0) {
+            t.right = remove(x, t.left);
+        } else if (t.left != null && t.right != null) { //Two children
+            t.element = findMin(t.right).element;
+            t.right = remove(t.element, t.right);
+        } else {
+            t = (t.left != null) ? t.left : t.right;
+        }
+
+        return t;
+    }
+
+    private void printTree(BinaryNode<AnyType> t) {
+
+    }
+}
+```
+
+
+
+##### 4.3.1	contains 方法
+
+如果在树 T 中存在含有项 X 的节点，那么这个操作需要返回 true，如果这样的节点不存在则返回 false。树的结构使得这种操作很简单。如果 T 是空集，那么可以就返回 false。否则，如果存储在 T 处的项是 X，那么可以返回 true。否则，我们对树 T 的左子树或右子树进行一次递归调用，这依赖于 X 与存储在 T 中的项的关系。图 4-18 中的代码就是对这种方法的一种实现。
+
+注意测试的顺序。关键的问题是首先钥对是否空树进行测试，否则我们就会生成一个企图通过 null 引用访问数据域的 NullPointerException 异常。剩下的测试应该使得最不可能的情况安排在最后进行。还要注意，这里的两个递归调用事实上都是尾递归并且可以用一个 while 循环很容易地代替。尾递归的使用在这里是合理的，因为算法表达式的简明性是以速度降低为代价的，而这里所使用的栈空间的量也只不过是 O(logN) 而已。图 4-19 显示需要使用一个函数对象而不是要求这些项是 Comparable 的。它模仿 1.6 节的风格。
+
+
+
+##### 4.3.2	findMin 方法和 findMax 方法
+
+这两个 private 例程分别返回树中包含最小元和最大元的节点的引用。为执行 findMin，从根开始并且只要有左儿子就向左进行。终止点就是最小的元素。findMax 例程除分支朝向右儿子外其余过程相同。
+
+这种递归是如此容易以至于许多程序设计员不厌其烦地使用它。我们用两种方法编写这两个例程，用递归编写 findMin 而用非递归编写 findMax（见图 4-20）。
+
+注意，我们是如何小心地处理空树的退化情况的。虽然这样做总是重要的，但是特别在递归程序中它尤其重要。此外，还要注意，在 findMax 中对 t 的改变是安全的，因为我们只用到引用的拷贝来进行工作。不管怎么说，还是应该随时特别小心，因为诸如 t.right = t.right.right 这样的语句将会产生一些变化。
+
+
+
+##### 4.3.3	insert 方法
+
+进行插入操作的例程在概念上是简单的。为了将 X 插入到树 T 中，你可以像用 contains 那样沿着树查找。如果找到 X，则什么也不用做（或做一些 “更新”）。否则，将 X 插入到遍历的路径上的最后一点上。图 4-21 显示实际的插入情况。为了插入 5，我们遍历该树就好像在运行 contains。在具有关键字 4 的节点处，我们需要向右行进，但右边不存在子树，因此 5 不在这棵树上，从而这个位置就是所要插入的位置。
+
+
+
+
+
+重复元的插入可以通过在节点记录中保留一个附加域以指示发生的频率来处理。这对整个的树增加了某些附加空间，但是，却比将重复信息放到树中要好（它将使树的深度变得很大）。当然，如果 compareTo 方法使用的关键字只是一个更大结构的一部分，那么这种方法行不通，此时我们可以把具有相同关键字的所有结构保留在一个辅助数据结构中，如表或是另一颗查找树。
+
+图 4-22 显示插入例程的代码。由于 t 引用该树的根，而根又在第一次插入时变化，因此 insert 被写成一个返回对新树根的引用的方法。第 15 行和第 17 行递归地插入 x 到适当的子树中。
+
+
+
+##### 4.3.4	remove 方法
+
+正如许多数据结构一样，最困难的操作是 remove（删除）。一旦我们发现要被删除的节点，就需要考虑几种可能的情况。
+
+如果节点是一片树叶，那么它可以被立即删除。如果节点有一个儿子，则该节点可以在其父节点调整自己的链以绕过该节点后被删除（为了清楚起见，我们将明确地画出链的指向），见图 4-23。
+
+
+
+
+
+
+
+复杂的情况是处理具有两个儿子的节点。一般的删除策略是用其右子树的最小的数据（很容易找到）代替该节点的数据并递归地删除那个节点（现在它是空的）。因为右子树中的最小的节点不可能有左儿子，所以第二次 remove 更容易。图 4-24 显示一棵初始的树及其中一个节点被删除后的结果。要被删除的节点是根的左儿子；其关键字是 2。它被其右子树中的最小数据 3 所代替，然后关键字是 3 的原节点如前例那样被删除。
+
+图 4-25 中的程序完成删除的工作，但它的效率并不高，因为它沿该树进行两趟搜索以查找和删除右子树中最小的节点。通过写一个特殊的 removeMin 方法可以很容易地改变这种效率不高地缺点，我们这里将它略去只是为了简明。
+
+如果删除的次数不多，通常使用的策略是**懒惰删除**（lazy deletion）；当一个元素要被删除时，它仍留在树中，而只是被标记为删除。这特别是在有重复项时很常用，因为此时记录出现频率数的域可以减 1。如果树中的实际节点数和 “被删除” 的节点数相同，那么树的深度预计只上升一个小的常数（为什么？），因此，存在一个与懒惰删除相关的非常小的时间损耗。再有，如果被删除的项是重新插入的，那么分配一个新单元的开销就避免了。
+
+
+
+##### 4.3.5	平均情况分析
+
+直观上，我们期望前一节所有的操作都花费 O(logN) 时间，因为我们用常数时间在树中降低了一层，这样一来，对其进行操作的树大致减小一半左右。因此，所有操作的运行时间都是 O(d)，其中 d 是包含所访问的项的节点的深度。
+
+证明：略
+
+上面的讨论主要是说明，决定 “平均” 意味着什么一般是极其困难的，可能需要一些假设，这些假设可能合理，也可能不合理。不过，在没有删除或是使用懒惰删除的情况下，我们可以断言：上述那些操作的平均运行时间都是 O(logN)。除像上面讨论的一些个别情形外，这个结果与实际观察到的情形是非常一致的。
+
+如果向一棵树输入预先排好序的数据，那么一连串 insert 操作将花费二次的时间，而链表实现的代价会非常巨大，因为此时的树将只由那些没有左儿子的节点组成。一种解决方法就是要有一个称为**平衡**（balance）的附加的结构条件：任何节点的深度均不得过深。
+
+许多一般的算法都能实现平衡树。但是，大部分算法都要比标准的二叉查找树复杂得多，而且更新要平均花费更长得时间。不过，它们确实防止了处理起来非常麻烦得一些简单情形。下面，我们将介绍最古老的一种平衡查找树，即 AVL 树。
+
+另外，较新的方法是放弃平衡条件，允许树有任意的深度，但是在每次操作之后要使用一个调整规则进行调整，使得后面的操作效率要高。这种类型的数据结构一般属于自调整（self-adjusting）类结构。在二叉查找树的情况下，对于任意单个操作我们不再保证 O(logN) 的时间界，但是可以证明任意**连续 M** 次操作在最坏的情形下花费时间 O(M log N)。一般这足以防止令人棘手的最坏情形。我们将要讨论的这汇总数据结构叫作**伸展树**（splay tree）；它的分析相当复杂，我们将在第 11 章讨论。
+
+
+
+#### 4.4	AVL 树
+
+ABL（Adelson-Velskii 和 Landis）树是**带有平衡条件**（balance condition）的二叉查找树。这个平衡条件必须要容易保持，而且它保证树的深度须是 O(logN)。最简单的想法是要求左右子树具有相同的高度。如图 4-28 所示，这种想法并不强求树的深度要浅。
+
+略
+
+
+
+#### 4.5	伸展树
+
+略
+
+
+
+#### 4.6	再探树的遍历
+
+略
+
+
+
+#### 4.7	B 树
+
+迄今为止，我们始终假设可以把整个数据结构存储到计算机的内存中。可是，如果数据更多装不下主存，那么这就意味着必须把数据结构放到磁盘上。此时，因为大 O 模型不再适用，所以导致游戏规则发生了变化。
+
+问题子啊与，大 O 分析假设所有的操作耗时都是相等的。然而，现在这种假设就不合适了，特别是涉及磁盘 I/O 的时候。例如，一台 500-MIPS 的机器可能每秒执行 5 亿条指令。这是相当快的，主要是因为速度主要依赖于电的特性。另一方面，磁盘操作是机械运动，它的速度主要依赖于转动磁盘和移动磁头的时间。许多磁盘以 7200RPM 旋转。即 1 分钟转 7200 转；因此，1 转占用 1/120 秒，或即 8.3 毫秒。平均可以认为磁盘转到一半的时候发现我们要寻找的信息，但这又被移动磁盘磁头的时间抵消，因此我们得到访问时间为 8.3 毫秒（这是非常宽松的估计；9~11 毫秒的访问时间更为普通）。因此，每秒大约可以进行 120 次磁盘访问。若不和处理器的速度比较，那么听起来还是相当不错的。可是考虑到处理器的速度，5 亿条指令却花费相对于 120 次磁盘访问的时间。换句话说，一次磁盘访问的价值大约是 40 万条指令。当然，这里每一个数据都是粗略的计算，不过相对速度还是相当清楚的：磁盘访问的代价太高了。不仅如此，处理器的速度还在以比磁盘速度快得多的速度增长（增长相当快的是磁盘容量的大小）。因此，为了节省一次磁盘访问，我们愿意进行大量的计算。几乎在所有的情况下，控制运行时间的都是磁盘访问的次数。于是，如果把磁盘访问次数减少一半，那么运行时间也将减半。
+
+在磁盘上，典型的查找树执行如下：设想要访问佛罗里达州公民的驾驶记录。假设有 1 千万项，每一个关键字是 32 字节（代表一个名字），而一个记录是 256 个字节。假设这些数据不能都装入主存，而我们是正在使用系统的 20 个用户中的一个（因此有 1/20 的资源）。这样，在 1 秒内，我们可以执行 2500 万次指令，或者执行 6 次磁盘访问。
+
+不平衡的二叉查找树是一个灾难。在最坏情形下它具有线性的深度，从而可能需要 1 千万次磁盘访问。平均来看，一次成功的查找可能需要 1.38logN 次磁盘访问，由于 log 10 000 000 ≈ 24。因此平均一次查找需要 32 次磁盘访问，或 5 秒的时间。在一棵典型的随机构造的树中，我们预料会有一些节点的深度要深 3 倍；它们需要大约 100 次磁盘访问，或 16 秒的时间。AVL 树多少要好一些。1.44logN 的最坏情形不可能发生，典型的情形是非常接近于 logN。这样，一棵 AVL 树平均将使用大约 25 次磁盘访问，需要的时间是 4 秒。
+
+我们想要把磁盘访问次数减小到一个非常小的常数，比如 3 或 4；而且我们愿意写一个复杂的程序来做这件事，因为在合理情况下机器指令基本上是不占时间的。由于典型的 AVL 树接近到最优的高度，因此应该清楚的是，二叉查找树是不可行的。使用二叉查找树我们不能行进到低于 logN。解法直觉上看是简单的：如果有更多的分支，那么就有更少的高度。这样，31 个节点的理想二叉树（perfect binary tree）有 5 层，而 31 个节点的 5 叉树则只有 3 层，如图 4-59 所示。一棵 M 叉查找树（M-ary search tree）可以有 M 路分支。随着分支增加，树的深度在减少。一棵完全二叉树（complete binary tree）的高度大约为 log~2~N，而一棵完全 M 叉树（complete M-ary tree）的高度大约是 log~m~N。
+
+
+
+
+
+
+
+我们可以以与建立二叉查找树大致相同的方式建立 M 叉查找树。在二叉查找树中，需要一个关键字来决定两个分支到底取用哪个分支；而在 M 叉查找树中需要 M1 个关键字来决定选取哪个分支。为使这种方案在最坏的情形下有效，需要保证 M 叉查找树以某种方式得到平衡。否则，像二叉查找树，它可能退化成一个链表。实际上，我们甚至想要更加限制性的平衡条件，即不想要 M 叉查找树退化到甚至是二叉查找树，因为那时我们又将无法摆脱 logN 次访问了。
+
+实现这种想法的一种方法是使用 B 树。这里描述基本的 B 树（这里所描述的是通常称为 B^+^ 树）。许多的变种和改进都是可能的，但实现起来多少要复杂些，因为有相当多的情形需要考虑。不过，容易看到，原则上 B 树保证只有少数的磁盘访问。
+
+阶为 M 的 B 树是一棵具有下列特性的树（法则 3 和 5 对于前 L 次插入必须要放宽）：
+
+1.数据项存储在树叶上。
+
+2.非叶节点存储直到 M-1 个关键字以指示搜索的方向；关键字 i 代表子树 i+1 中的最小的关键字。
+
+3.树的根或者是一片树叶，或者其儿子数在 2 和 M 之间。
+
+4.除根外，所有非树叶节点的儿子数在 [M/2] 和 M 之间。
+
+5.所有的树叶都在相同的深度上并有 [L/2] 和 L 之间个数据项，L 的确定稍后描述。
+
+图 4-60 显示 5 阶 B 树的一个例子。注意，所有的非叶节点的儿子数都在 3 和 5 之间（从而有 2 到 4 个关键字）；根可能只有两个儿子。这里，我们有 L=5（在这个例子中 L 和 M 恰好是相同的，但这不是必需的）。由于 L 是 5，因此每片树叶有 3 到 5 个数据项。要求节点半满将保证 B 树不致退化成简单的二叉树。虽然存在改变该结构的各种 B 树的定义，但大部分在一些次要的细节上变化，而我们这个定义是流行的形式之一。
+
+
+
+
+
+
+
+每个节点代表一个磁盘区块，于是我们根据所存储的项的大小选择 M 和 L。例如，设一个区块能容纳 8192 字节。在上面的佛罗里达例子中，每个关键字使用 32 个字节。在一棵 M 阶 B 树种，有 M-1 个关键字，总数为 32M-32 字节，再加上 M 个分支。由于每个分支基本上都是另外的一些磁盘区块，因此可以假设一个分支是 4 个字节。这样，这些分支共用 4M 个字节。一个非叶节点总的内存需求为 36M-32 个字节。使得不超过 8192 字节的 M 的最大值是 228.因此，我们选择 L=32。这样就保证每片树叶有 16 到 32 个数据记录以及每个内部节点（除根外）至少以 114 种方式分叉。由于有 1 千万个记录，因此至多存在 625000 片树叶。由此得知，在最坏情形下树叶将在第 4 层上。更具体地说，最坏情形地访问次数近似地由 log~M/2~N 给出，这个数可以有 1 的误差（例如，根和下一层可以存放在主存中，使得经过长时间运行后磁盘访问将只对第 3 层或更深层是需要的）。
+
+剩下的问题是如何向 B 树添加项和从 B 树删除项；下面将概述所涉及的想法。注意，许多论题以前见到过。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
