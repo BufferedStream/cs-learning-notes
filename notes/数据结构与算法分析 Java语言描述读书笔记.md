@@ -1467,7 +1467,39 @@ private static<KeyType> void update(Map<KeyType, List<String>> m, KeyType key, S
 
 第 3 个算法更复杂，使用一些附加的映射！和前面一样，将单词按照长度分组，然后分别对每组运算。为理解这个算法是如何工作的，假设我们对长度为 4 的单词操作。这时，首先要找出像 wind 和 nine 这样的单词对，它们除第 1 个字母外完全相同。对于长度为 4 的每一个的那次，一种做法是删除第 1 个字母，留下一个 3 字母单词代表。这样就形成一个 Map，其中的关键字为这种代表，而其值是所有包含同一代表的单词的一个 List。例如，在考虑 4 字母单词组的第 1 个字母时，代表 "ine" 对应 "dine" "fine" "wine" "nine" "mine" "vine" "pine" "line"。代表 "oot" 对应 "boot" "foot" "hoot" "loot" "soot" "zoot"。每一个作为最后的 Map 的一个值的 List 对象都形成单词的一个集团，其中任何一个单词均可以通过单字母替换变成另一个单词，因此在这个最后的 Map 构成之后，很容易遍历它以及添加一些项到正在计算的原始 Map 中。然后，我们使用一个新的 Map 再处理 4 字母单词组的第 2 个字母。此后是第 3 个字母，最后处理第 4 个字母。
 
+```java
+/**
+ * 图4-68  计算一个映射的函数，该映射以单词作为关键字并且以只有一个字母不同的一列单词
+ * 作为关键字的值。将单词按照长度分组。该算法对 89000 个单词的词典运行 16 秒
+ * 算法时间复杂度是二次的，但是维护一个额外的 map 来储存固定长度的单词来提高效率
+ */
+public static Map<String, List<String>> computeAdjacentWords(List<String> theWords) {
+    Map<String, List<String>> adjWords = new TreeMap<>();
+    Map<Integer, List<String>> wordsByLength = new TreeMap();
 
+    //Group the words by their length
+    for(String w : theWords) {
+        update(wordsByLength, w.length(), w);
+    }
+
+    //Work on each group separetely
+    for(List<String> groupWords : wordsByLength.values()) {
+        String[] words = new String[groupsWords.size()];
+
+        groupWords.toArray(words);
+        for(int i = 0; i < words.length; i++) {
+            for(int j = i + 1; j < words.length; j++) {
+                if(oneCharOff(words[i], words[j])) {
+                    update(adjWords, words[i], words[j]);
+                    update(adjWords, words[j], words[i]);
+                }
+            }
+        }
+    }
+
+    return adjWords;
+}
+```
 
 
 
