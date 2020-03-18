@@ -1208,6 +1208,13 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>> {
 
 ABL（Adelson-Velskii 和 Landis）树是**带有平衡条件**（balance condition）的二叉查找树。这个平衡条件必须要容易保持，而且它保证树的深度须是 O(logN)。最简单的想法是要求左右子树具有相同的高度。如图 4-28 所示，这种想法并不强求树的深度要浅。
 
+平衡二叉树递归定义如下：
+
+1. 左右子树的高度差小于等于 1。
+2. 其每一个子树均为平衡二叉树。
+
+
+
 略
 
 
@@ -1465,7 +1472,7 @@ private static<KeyType> void update(Map<KeyType, List<String>> m, KeyType key, S
 
 为此，可以使用第 2 个映射！此时的关键字是个整数，代表单词的长，而值则是该长度的所有单词的集合。我们可以使用一个 List 存储每个集合，然后应用相同的做法。程序如图 4-68 所示。第 9 行是第 2 个 Map 的声明，第 13 行和第 14 行将分组置入该 Map，然后用一个附加的循环对每组单词迭代。与第 1 个算法比较，第 2 个算法只是在边际上编程困难，其运行时间为 16 秒，大约快了 5 倍。
 
-第 3 个算法更复杂，使用一些附加的映射！和前面一样，将单词按照长度分组，然后分别对每组运算。为理解这个算法是如何工作的，假设我们对长度为 4 的单词操作。这时，首先要找出像 wind 和 nine 这样的单词对，它们除第 1 个字母外完全相同。对于长度为 4 的每一个的那次，一种做法是删除第 1 个字母，留下一个 3 字母单词代表。这样就形成一个 Map，其中的关键字为这种代表，而其值是所有包含同一代表的单词的一个 List。例如，在考虑 4 字母单词组的第 1 个字母时，代表 "ine" 对应 "dine" "fine" "wine" "nine" "mine" "vine" "pine" "line"。代表 "oot" 对应 "boot" "foot" "hoot" "loot" "soot" "zoot"。每一个作为最后的 Map 的一个值的 List 对象都形成单词的一个集团，其中任何一个单词均可以通过单字母替换变成另一个单词，因此在这个最后的 Map 构成之后，很容易遍历它以及添加一些项到正在计算的原始 Map 中。然后，我们使用一个新的 Map 再处理 4 字母单词组的第 2 个字母。此后是第 3 个字母，最后处理第 4 个字母。
+第 3 个算法更复杂，使用一些附加的映射！和前面一样，将单词按照长度分组，然后分别对每组运算。为理解这个算法是如何工作的，假设我们对长度为 4 的单词操作。这时，首先要找出像 wine 和 nine 这样的单词对，它们除第 1 个字母外完全相同。对于长度为 4 的每一个单词，一种做法是删除第 1 个字母，留下一个 3 字母单词代表。这样就形成一个 Map，其中的关键字为这种代表，而其值是所有包含同一代表的单词的一个 List。例如，在考虑 4 字母单词组的第 1 个字母时，代表 "ine" 对应 "dine" "fine" "wine" "nine" "mine" "vine" "pine" "line"。代表 "oot" 对应 "boot" "foot" "hoot" "loot" "soot" "zoot"。在这个最新的映射中，作为一个值的每个单独的列表形成一个单词组，其中任何单词都可以通过一个字符替换而更改为任何其他单词，因此在构造这个最新的映射之后，很容易遍历它并将条目添加到正在计算的原始映射中。然后，我们使用一个新的 Map 再处理 4 字母单词组的第 2 个字母。此后是第 3 个字母，最后处理第 4 个字母。
 
 ```java
 /**
@@ -1503,15 +1510,98 @@ public static Map<String, List<String>> computeAdjacentWords(List<String> theWor
 
 
 
+一般概述如下：
+
+```java
+for each group g, containing words of length len
+	for each position p(ranging from 0 to len-1) {
+		Make an empty Map<String, List<String>> repsToWords
+		for each word w {
+			Obtain w's representative by removing position p
+			Update repsToWords
+		}
+		Use cluques in repsToWords to update adjWords map
+	}
+```
 
 
 
+图 4-69 包含该算法的一种实现，其运行时间改进到 4 秒。虽然这些附加的 Map 使得算法更快，而且句子结构也相对清晰，但是程序没有利用到该 Map 的关键字保持有序排列的事实，注意到这一点很有趣。
+
+```java
+/**
+ * 图4-69  计算包含单词作为关键字及只有一个字母不同的一列单词作为值的
+ * 映射的函数。对一个 89000 单词的词典只运行 1 秒钟
+ * 算法时间复杂度只有 O(NlogN)
+ */
+public static Map<String, List<String>> computeAdjacentWords(List<String> words) {
+    Map<String, List<String>> adjWords = new TreeMap<>();
+    Map<Integer, List<String>> wordsByLength = new TreeMap<>();
+
+    //Group the words by their length
+    for(String w : words) {
+        update(wordsByLength, w.length(), w);
+    }
+
+    //Work on each group separetely
+    for(Map.Entry<Integer, List<String>> entry : wordsByLength.entrySet()) {
+        List<String> groupsWords = entry.getValue();
+        int groupNum = entry.getKey();
+
+        //Work on each position in each group
+        for(int i = 0; i < groupNum; i++) {
+            /**
+             * Remove one character in specified position,computing
+             * representative. Words with same representative are
+             * adjacent, so first populate a map ...
+             */
+            Map<String, List<String>> repToWord = new TreeMap<>();
+
+            for(String str : groupsWords) {
+                String rep = str.substring(0, i) + str.substring(i + 1);
+                update(repToWord, rep, str);
+            }
+
+            //and then look for map values with more than one string
+            for(List<String> wordClique : repToWord.values()) {
+                if(wordClique.size() >= 2) {
+                    for(String s1 : wordClique) {
+                        for(String s2 : wordClique) {
+                            if(s1 != s2) {
+                                update(adjWords, s1, s2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return adjWords;
+}
+```
 
 
 
+同样，有可能一种支持 Map 的操作但不保证有序排列的数据结构可能运行得更快，因为它要做的工作更少。第 5 章将探索这种可能性，并讨论隐藏在另一种 Map 实现背后的想法，这种实现叫作 HashMap。HashMap 讲实现得运行时间从 1 秒减少到 0.8 秒。
 
 
 
+**小结**
+
+我们已经看到树在操作系统、编译器设计以及查找中应用。表达式树是更一般结构即所谓**分析树**（parse tree）的一个小例子，分析树是编译器设计中的核心数据结构。分析树不是二叉树，而是表达式树相对简单的扩充（不过，建立分析树的算法却并不那么简单）。
+
+查找树在算法设计中是非常重要的。它们几乎支持所有的有用的操作，而其平均的对数时间复杂度开销很小。查找树的非递归实现多少要快一些，但是递归实现更巧妙、更精彩，而且更易于理解和调试。查找树的问题在于，其性能严重地依赖于输入，而输入却是随机的。如果情况不是这样，则运行时间会显著增加，查找树会成为昂贵的链表。
+
+我们见到了处理这个问题的几种方法。AVL 树要求所有节点的左子树与右子树的高度相差最多是 1。这就保证了树不至于太深。不改变树的操作（但插入操作改变树）都可以使用标准二叉查找树的程序。改变树的操作必须将树恢复。这多少有些复杂，特别是在删除的情况。我们叙述了在以 O(logN) 的时间插入后如何将树恢复。
+
+我们还考察了伸展树。伸展树中的节点可以达到任意深度，但是在每次访问之后树又以多少有些神秘的方式被调整。实际效果是，任意连续 M 次操作花费 O(MlogN) 时间，它与平衡树花费的时间相同。
+
+与 2 路树或二叉树不同，B 树是平衡 M 路数，它能很好地适应磁盘操作的情况；一种特殊情形是 2-3 树（M=3），它是实现平衡查找树的另一种方法。
+
+在实践中，所有平衡树方案的运行时间对于插入和删除操作（除查找稍微快一些外）都不如简单二叉查找树省时（差一个常数因子），但这一般说来是可以接受的，它防止轻易得到最坏情形的输入。第 12 章将讨论某些另外的查找数据结构并给出一些详细的实现方法。
+
+最后注意：通过将一些元素插入到查找树然后执行一次中序遍历，我们得到的是排过顺序的元素。这给出排序的一种 O(NlogN) 算法，如果使用任何成熟的查找树则它就是最坏情形的界。我们将在第 7 章看到一些更好的方法，不过，这些方法的时间界都不可能更低。
 
 
 
