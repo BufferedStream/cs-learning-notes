@@ -1618,7 +1618,9 @@ public static Map<String, List<String>> computeAdjacentWords(List<String> words)
 
 #### 5.1	一般想法
 
-理想的散列表数据结构只不过是一个包含一些项（item）的具有固定大小的数组。第 4 章讨论过，通常查找是对项的某个部分（即数据域）进行的。
+理想的散列表数据结构只不过是一个包含一些项（item）的具有固定大小的数组。第 4 章讨论过，通常查找是对项的某个部分（即数据域）进行的。这部分就叫作**关键字**（key）。例如，项可以由一个串（它可以作为关键字）和其他一些数据域组成（例如，姓名是大型雇员结构的一部分）。我们把表的大小记为 TableSize，并将其理解为散列数据结构的一部分，而不仅仅是浮动于全局的某个变量。通常的习惯是让表从 0 到 TableSize-1 变化；稍后我们就会明白为什么要这样做。
+
+每个关键字被映射到从 0 到 TableSize-1 这个范围中的某个数，并且被放到适当的单元中。这个映射就叫作**散列函数**（hash function），理想情况下它应该计算起来简单，并且应该保证任何两个不同的关键字映射到不同的单元。由于存在有限数量的单元并提供了几乎不竭的关键字，因此这显然是不可能的，因此我们寻求一种散列函数，以将密钥均匀地分布在单元之间。图 5-1 是完美情况的一个典型。在这个例子中，john 散列到 3，phil 散列到 4，dave 散列到 6，mary 散列到 7。
 
 
 
@@ -1628,11 +1630,225 @@ public static Map<String, List<String>> computeAdjacentWords(List<String> words)
 
 
 
+这就是散列的基本想法。剩下的问题就是要选择一个函数，决定当两个关键字散列到同一个值的时候（这叫作**冲突**（collision））应该做什么以及如何确定散列表的大小。
+
+
+
+#### 5.2	散列函数
+
+如果输入的关键字是整数，则一般合理的方法就是直接返回 Key mod Tablesize，除非 Key 碰巧具有某些不合乎需要的性质。在这种情况下，散列函数的选择需要仔细地考虑。例如，若表的大小是 10 而关键字都以 0 为个位，则此时上述标准的散列函数就是一个不好的选择。其原因我们将在后面看到，而为了避免上面那样的情况，好的办法通常是保证表的大小是素数。当输入的关键字是随机整数时，散列函数不仅计算起来简单而且关键字的分配也很均匀。
+
+通常，关键字是字符串；在这种情形下，散列函数需要仔细地选择。
+
+一种选择方法是把字符串中字符的 ASCII 码（或 Unicode 码）值加起来。图 5-2 中的例程实现这种策略。
 
 
 
 
 
+
+
+图 5-2 中描述的散列函数实现起来简单而且能够很快地计算出答案。不过，如果表很大，函数将不会很好地分配关键字。例如，设 TableSize=10007（10007 是素数），并设所有的关键字至多 8 个字符长。由于 ASCII 字符的值最多是 127，因此散列函数只能假设值在 0 和 1016 之间，其中 1016 为 127*8。显然这不是一种均匀的分配。
+
+另一个散列函数如图 5-3 所示。这个散列函数假设 Key 至少有 3 个字符。值 27 表示英文字母表的字母外加一个空格的个数，而 729 是 27^2^。该函数只考察前三个字符，但是，假如它们是随机的，而表的大小像前面那样还是 10007，那么我们就会得到一个合理的均衡分布。可是不巧的是，英文不是随机的。虽然 3 个字符（忽略空格）有 26^3^=17567 种可能的组合，但查验合理的足够大的联机词典却揭示：3 个字母的不同组合数实际只有 2851。即使这些组合没有冲突，也不过只有表的 28% 被真正散列到。因此，虽然很容易计算，但是当散列表具有合理大小的时候这个函数还是不合适的。
+
+
+
+
+
+
+
+图 5-4 列出了散列函数的第 3 种尝试。这个散列函数涉及关键字中的所有字符，并且一般可以分布得很好。
+
+这个散列函数利用到事实：允许溢出。这可能会引进负的数，因此在末尾有附加的测试。
+
+图 5-4 所描述的散列函数就表的分布而言未必是最好的，但确实具有极其简单的优点而且速度也很快。如果关键字特别长，那么该散列函数计算起来将会花费过多的时间。在这种情况下通常的经验是不使用所有的字符。此时关键字的长度和性质将影响选择。例如，关键字可能是完整的街道地址，散列函数可以包括街道地址的几个字符，也许还有城市名和邮政编码的几个字符，有些程序设计人员通过只使用奇数位置上的字符来实现他们的散列函数，这里有这么一层想法：用计算散列函数节省下来的时间来补偿由此产生的对均匀地分布的函数的轻微干扰。
+
+
+
+
+
+
+
+剩下的主要编程细节是解决冲突的消除问题。如果当一个元素被插入时与一个已经插入的元素散列到相同的值，那么就产生一个冲突，这个冲突需要消除。解决这种冲突的方法有几种，我们将讨论其中最简单的两种：分离链接法和开放定址法。
+
+
+
+#### 5.3	分离链接法
+
+解决冲突的第一种方法通常叫作**分离链接法**（separate chaining），其做法是将散列到同一个值的所有元素保留到一个表中。我们可以使用标准库表的实现方法。如果空间很紧，则更可取的方法是避免使用它们（因为这些表是双向链接的并且浪费空间）。本节我们假设关键字是前 10 个完全平方数并设散列函数就是 hash(x)=x mod 10（表的大小不是素数，用在这里是为了简单）。图 5-5 对此做出更清晰的解释。
+
+
+
+
+
+
+
+为执行一次查找，我们使用散列函数来确定究竟遍历哪个链表。然后我们再在被确定的链表中执行一次查找。为执行 insert，我们检查相应的链表看看该元素是否已经处在适当的位置（如果允许插入重复元，那么通常要留出一个额外的域，这个域当出现匹配事件时增 1）。如果这个元素是个新元素，那么它将被插入到链表的前端，这不仅因为方便，还因为常常发生这样的事实：新近插入的元素最有可能不久又被访问。
+
+```java
+/**
+ * 图5-6 分离链接散列表的类架构
+ */
+public class SeparateChainingHashTable<AnyType> {
+
+    /**
+     * 图5-9 分离链接散列表的构造方法和makeEmpty方法
+     */
+    public SeparateChainingHashTable() {
+       this(DEFAULT_TABLE_SIZE);
+    }
+
+    public SeparateChainingHashTable(int size) {
+        theLists = new LinkedList[nextPrime(size)];
+        for(int i = 0; i < theLists.length; i++) {
+            theLists[i] = new LinkedList<>();
+        }
+    }
+
+    //Make the hash table logically empty.
+    public void makeEmpty() {
+        for(int i = 0; i < theLists.length; i++) {
+            theLists[i].clear();
+        }
+        currentSize = 0;
+    }
+
+    /**
+     * 图5-10 分离链接散列表的contains例程、insert例程和remove例程
+     * Find an item in the hash table.
+     * @param x the item to search for
+     * @return true if x is not found
+     */
+    public boolean contains(AnyType x) {
+        List<AnyType> whichList = theLists[myhash(x)];
+        return whichList.contains(x);
+    }
+
+    /**
+     * Insert into the hash table. If the item
+     * is already present, then do nothing
+     * @param x the item to insert
+     */
+    public void insert(AnyType x) {
+        List<AnyType> whichList = theLists[myhash(x)];
+        if(!whichList.contains(x)) {
+            whichList.add(x);
+
+            //Rehash; see Section 5.5
+            if(++currentSize > theLists.length) {
+                rehash();
+            }
+        }
+    }
+
+    /**
+     * Remove from the hash table
+     * @param x the item to remove
+     */
+    public void remove(AnyType x) {
+        List<AnyType> whichList = theLists[myhash(x)];
+        if(whichList.contains(x)) {
+            whichList.remove(x);
+            currentSize--;
+        }
+    }
+
+    private static final int DEFAULT_TABLE_SIZE = 101;
+
+    private List<AnyType>[] theLists;
+    private int currentSize;
+
+    /**
+     * 图5-22 对分离链接散列表和探测散列表的再散列
+     * Rehashing for quadratic probing hash table
+     */
+    private void rehash() {
+        HashEntry<AnyType>[] oldArray = array;
+
+        //Create a new double-sized, empty table
+        allocateArray(nextPrime(2 * oldArray.length));
+        currentSize = 0;
+
+        //Copy table over
+        for(int i = 0; i < oldArray.length; i++) {
+            if(oldArray[i] != null && oldArray[i].isActive) {
+                insert(oldArray[i].element);
+            }
+        }
+    }
+
+    /**
+     * 图5-7 散列表的myHash方法
+     * @param x
+     * @return
+     */
+    private int myhash(AnyType x) {
+        int hashVal = x.hashCode();
+
+        hashVal %= theLists.length;
+        if(hashVal < 0) {
+            hashVal += theLists.length;
+        }
+
+        return hashVal;
+    }
+
+    /**
+     * 返回不小于某个整数的素数
+     * @param num 整数
+     * @return 下一个素数（可以相等）
+     */
+    private static int nextPrime(int num) {
+        if (num == 0 || num == 1 || num == 2) {
+            return 2;
+        }
+        if (num % 2 == 0) {
+            num++;
+        }
+        while (!isPrime(num)) {
+            num += 2;
+        }
+        return num;
+    }
+
+    /**
+     * 检查某整数是否为素数
+     * @param num 检查整数
+     * @return 检查结果
+     */
+    private static boolean isPrime(int num) {
+        if (num == 2 || num == 3) {
+            return true;
+        }
+        if (num == 1 || num % 2 == 0) {
+            return false;
+        }
+        for (int i = 3; i * i <= num; i += 2) {
+            if (num % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+
+
+实现分离链接法所需要的类架构如图 5-6 所示。散列表存储一个链表数组，它们在构造方法中被指定。
+
+就像二叉查找树只对那些是 Comparable 的对象工作一样，本章中的散列表只对遵守确定协议的那些对象工作。在 Java 中这样的对象必须提供适当 equals 方法和返回一个 int 型量的 hashCode 方法，此时，散列表把这个 int 型量通过 myHash 转成适当的数组下标，如图 5-7 所示。图 5-8 解释了 Employee 类，可以将其存放在一个散列表中。类 Employee 提供 equals 方法和基于 Employee 名字的 hashCode 方法。Employee 类的 hashCode 通过使用标准 String 类中定义的 hashCode 来工作。这个标准类中的 hashCode 基本上是图 5-4 中将 14 行到 16 行除去后的程序。
+
+图 5-9 列出构造方法和方法 makeEmpty。
+
+实现 contains、insert 和 remove 的例程如图 5-10 所示。
+
+在插入例程中，如果被插入的项已经存在，那么我们不执行任何操作；否则，我们将其放入链表中。该元素可以被放到链表中的任何位置；在我们这种情况下使用 add 方法是最方便的。
+
+除链表外，还可以使用任何方案来解决冲突；一棵二叉查找树或甚至另一个散列表都将胜任这个工作，但是，如果散列表很大并且散列函数很好，那么所有的链表都应该是短的，从而任何复杂的尝试都不值得考虑了。
+
+我们定义散列表的**装填因子**（load factor）**λ** 为散列表中的元素个数对该表的大小的比。在上面的例子中，λ=1.0。链表的平均长度为 λ。执行一次查找所需要的工作是计算散列函数值所需要的常数时间加上遍历链表所用的时间。在一次不成功的查找中，要考查的节点数平均为 λ。一次成功的查找则需要遍历大约 1+(λ/2) 个链。为了看清这一点，注意被搜索的链表包含一个存储匹配的节点再加上 0 个或更多其他的节点。在 N 个元素的散列表以及 M 个链表中 “其他节点” 的期望个数为 (N-1)/M=λ-1/m，它基本上就是 λ，因为假设 M 是大的。平均看来，一半的 “其他” 节点被搜索到，再结合匹配节点，我们得到 1+λ/2 个节点的平均查找代价。这个分析指出，散列表的大小实际上并不重要，而装填因子才是重要的。分离链接散列法的一般法则是使得表的大小与预料的元素个数大致相当（换句话说，让 λ≈1）。再图 5-10 的程序中，如果装填因子超过 1，那么我们通过调用在 26 行上的 rehash 函数扩大散列表的大小。rehash 将在 5.5 节讨论。正如前面提到的，使表的大小是素数以保证一个好的分布，这个想法很好。
 
 
 
